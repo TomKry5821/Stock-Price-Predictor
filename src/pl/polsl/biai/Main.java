@@ -13,13 +13,14 @@ public class Main {
         CsvReader csvReader = new CsvReader();
         List<Row> rows = new ArrayList<>();
         rows = csvReader.readFromCsv();
-
+        System.out.println("Before normalization");
         rows.stream().forEach(row -> {
             System.out.printf("%f, %f, %f, %f, %f\n", row.getHighRate(), row.getDayBeforeCloseRate(), row.getLowRate(), row.getOpenRate(), row.getVolume());
         });
         DataFrame dataFrame = new DataFrame();
         dataFrame.setRows(rows);
-        dataFrame.minMaxNormalize(1.0, 0.0);
+        System.out.println("After normalization");
+        dataFrame.prepareToMinMaxNormalizationAndNormalize(1.0, 0.0);
         dataFrame.getRows().stream().forEach(row -> {
             System.out.printf("%f, %f, %f, %f, %f\n", row.getHighRate(), row.getDayBeforeCloseRate(), row.getLowRate(), row.getOpenRate(), row.getVolume());
         });

@@ -1,7 +1,6 @@
 package pl.polsl.biai.model;
 
 import com.opencsv.bean.CsvBindByName;
-import com.opencsv.bean.CsvNumber;
 
 public class Row {
     @CsvBindByName(column = "open", required = true)

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class DataFrame {
+public class DataFrame implements Normalizable {
     private List<Row> rows = new ArrayList<>();
     private double minOpenRate;
     private double maxOpenRate;
@@ -169,20 +169,17 @@ public class DataFrame {
         return;
     }
 
-    public void minMaxNormalize(double maxRange, double minRange) {
+    public void prepareToMinMaxNormalizationAndNormalize(double maxRange, double minRange) {
         this.findMins();
         this.findMaxes();
         for (Row r : this.rows) {
-            r.setVolume(this.normalize(1.0, 0.0, this.maxVolume, this.minVolume, r.getVolume()));
-            r.setLowRate(this.normalize(1.0, 0.0, this.maxLowRate, this.minLowRate, r.getLowRate()));
-            r.setHighRate(this.normalize(1.0, 0.0, this.maxHighRate, this.minHighRate, r.getHighRate()));
-            r.setDayBeforeCloseRate(this.normalize(1.0, 0.0, this.maxDayBeforeCloseRate, this.minDayBeforeCloseRate, r.getDayBeforeCloseRate()));
-            r.setOpenRate(this.normalize(1.0, 0.0, this.maxOpenRate, this.minOpenRate, r.getOpenRate()));
+            r.setVolume(this.minMaxNormalization(1.0, 0.0, this.maxVolume, this.minVolume, r.getVolume()));
+            r.setLowRate(this.minMaxNormalization(1.0, 0.0, this.maxLowRate, this.minLowRate, r.getLowRate()));
+            r.setHighRate(this.minMaxNormalization(1.0, 0.0, this.maxHighRate, this.minHighRate, r.getHighRate()));
+            r.setDayBeforeCloseRate(this.minMaxNormalization(1.0, 0.0, this.maxDayBeforeCloseRate, this.minDayBeforeCloseRate, r.getDayBeforeCloseRate()));
+            r.setOpenRate(this.minMaxNormalization(1.0, 0.0, this.maxOpenRate, this.minOpenRate, r.getOpenRate()));
         }
 
     }
 
-    private double normalize(double maxRange, double minRange, double max, double min, double actual) {
-        return (actual - min) / (max - min) * (maxRange - minRange) + minRange;
-    }
 }
