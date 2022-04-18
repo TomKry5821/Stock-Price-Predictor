@@ -6,6 +6,7 @@ import java.util.List;
 
 public class DataFrame implements Normalizable {
     private List<Row> rows = new ArrayList<>();
+    private List<Double> expectedOutputs = new ArrayList<>();
     private double minOpenRate;
     private double maxOpenRate;
     private double minDayBeforeCloseRate;
@@ -118,8 +119,8 @@ public class DataFrame implements Normalizable {
         this.rows = rows;
         this.minOpenRate = rows.get(0).getOpenRate();
         this.maxOpenRate = rows.get(0).getOpenRate();
-        this.minDayBeforeCloseRate = rows.get(0).getDayBeforeCloseRate();
-        this.maxDayBeforeCloseRate = rows.get(0).getDayBeforeCloseRate();
+        this.minDayBeforeCloseRate = rows.get(0).getCloseRate();
+        this.maxDayBeforeCloseRate = rows.get(0).getCloseRate();
         this.minHighRate = rows.get(0).getHighRate();
         this.maxHighRate = rows.get(0).getHighRate();
         this.maxLowRate = rows.get(0).getLowRate();
@@ -127,13 +128,36 @@ public class DataFrame implements Normalizable {
         this.maxVolume = rows.get(0).getVolume();
     }
 
+    public List<Double> getExpectedOutputs() {
+        return expectedOutputs;
+    }
+
+    public void setExpectedOutputs() {
+        for(int i = 1; i < this.rows.size(); i++){
+            this.expectedOutputs.add(rows.get(i).getCloseRate());
+        }
+        this.expectedOutputs.add(rows.get(33).getCloseRate());
+    }
+
+    public void prepareToMinMaxNormalizationAndNormalize(double maxRange, double minRange) {
+        this.findMins();
+        this.findMaxes();
+        for (Row r : this.rows) {
+            r.setVolume(this.minMaxNormalization(1.0, 0.0, this.maxVolume, this.minVolume, r.getVolume()));
+            r.setLowRate(this.minMaxNormalization(1.0, 0.0, this.maxLowRate, this.minLowRate, r.getLowRate()));
+            r.setHighRate(this.minMaxNormalization(1.0, 0.0, this.maxHighRate, this.minHighRate, r.getHighRate()));
+            r.setCloseRate(this.minMaxNormalization(1.0, 0.0, this.maxDayBeforeCloseRate, this.minDayBeforeCloseRate, r.getCloseRate()));
+            r.setOpenRate(this.minMaxNormalization(1.0, 0.0, this.maxOpenRate, this.minOpenRate, r.getOpenRate()));
+        }
+    }
+
     public void findMins() {
         this.rows.stream().forEach(row -> {
             if (row.getVolume() <= this.minVolume) {
                 this.minVolume = row.getVolume();
             }
-            if (row.getDayBeforeCloseRate() <= this.minDayBeforeCloseRate) {
-                this.minDayBeforeCloseRate = row.getDayBeforeCloseRate();
+            if (row.getCloseRate() <= this.minDayBeforeCloseRate) {
+                this.minDayBeforeCloseRate = row.getCloseRate();
             }
             if (row.getHighRate() <= this.minHighRate) {
                 this.minHighRate = row.getHighRate();
@@ -153,8 +177,8 @@ public class DataFrame implements Normalizable {
             if (row.getVolume() >= this.maxVolume) {
                 this.maxVolume = row.getVolume();
             }
-            if (row.getDayBeforeCloseRate() >= this.maxDayBeforeCloseRate) {
-                this.maxDayBeforeCloseRate = row.getDayBeforeCloseRate();
+            if (row.getCloseRate() >= this.maxDayBeforeCloseRate) {
+                this.maxDayBeforeCloseRate = row.getCloseRate();
             }
             if (row.getHighRate() >= this.maxHighRate) {
                 this.maxHighRate = row.getHighRate();
@@ -168,18 +192,4 @@ public class DataFrame implements Normalizable {
         });
         return;
     }
-
-    public void prepareToMinMaxNormalizationAndNormalize(double maxRange, double minRange) {
-        this.findMins();
-        this.findMaxes();
-        for (Row r : this.rows) {
-            r.setVolume(this.minMaxNormalization(1.0, 0.0, this.maxVolume, this.minVolume, r.getVolume()));
-            r.setLowRate(this.minMaxNormalization(1.0, 0.0, this.maxLowRate, this.minLowRate, r.getLowRate()));
-            r.setHighRate(this.minMaxNormalization(1.0, 0.0, this.maxHighRate, this.minHighRate, r.getHighRate()));
-            r.setDayBeforeCloseRate(this.minMaxNormalization(1.0, 0.0, this.maxDayBeforeCloseRate, this.minDayBeforeCloseRate, r.getDayBeforeCloseRate()));
-            r.setOpenRate(this.minMaxNormalization(1.0, 0.0, this.maxOpenRate, this.minOpenRate, r.getOpenRate()));
-        }
-
-    }
-
 }

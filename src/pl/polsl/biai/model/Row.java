@@ -2,11 +2,14 @@ package pl.polsl.biai.model;
 
 import com.opencsv.bean.CsvBindByName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Row {
     @CsvBindByName(column = "open", required = true)
     private double openRate;
     @CsvBindByName(column = "close", required = true)
-    private double dayBeforeCloseRate;
+    private double closeRate;
     @CsvBindByName(column = "high", required = true)
     private double highRate;
     @CsvBindByName(column = "low", required = true)
@@ -16,7 +19,7 @@ public class Row {
 
     public Row() {
         this.openRate = 0.0;
-        this.dayBeforeCloseRate = 0.0;
+        this.closeRate = 0.0;
         this.highRate = 0.0;
         this.lowRate = 0.0;
         this.volume = 0.0;
@@ -30,12 +33,12 @@ public class Row {
         this.openRate = openRate;
     }
 
-    public double getDayBeforeCloseRate() {
-        return dayBeforeCloseRate;
+    public double getCloseRate() {
+        return closeRate;
     }
 
-    public void setDayBeforeCloseRate(double dayBeforeCloseRate) {
-        this.dayBeforeCloseRate = dayBeforeCloseRate;
+    public void setCloseRate(double closeRate) {
+        this.closeRate = closeRate;
     }
 
     public double getHighRate() {
@@ -60,5 +63,15 @@ public class Row {
 
     public void setVolume(double volume) {
         this.volume = volume;
+    }
+
+    public List<Double> getInput() {
+        List<Double> input = new ArrayList<>();
+        input.add(this.openRate);
+        input.add(this.closeRate);
+        input.add(this.highRate);
+        input.add(this.volume);
+        input.add(this.lowRate);
+        return input;
     }
 }
