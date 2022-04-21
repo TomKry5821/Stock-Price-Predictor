@@ -133,25 +133,28 @@ public class DataFrame implements Normalizable {
     }
 
     public void setExpectedOutputs() {
-        for(int i = 1; i < this.rows.size(); i++){
+        for (int i = 1; i < this.rows.size(); i++) {
             this.expectedOutputs.add(rows.get(i).getCloseRate());
         }
-        this.expectedOutputs.add(rows.get(33).getCloseRate());
+        rows.remove(rows.size() - 1); // we need to remove last item in rows because we do not have expected output for last item
     }
 
     public void prepareToMinMaxNormalizationAndNormalize(double maxRange, double minRange) {
-        this.findMins();
+        this.findMinimums();
         this.findMaxes();
         for (Row r : this.rows) {
-            r.setVolume(this.minMaxNormalization(1.0, 0.0, this.maxVolume, this.minVolume, r.getVolume()));
-            r.setLowRate(this.minMaxNormalization(1.0, 0.0, this.maxLowRate, this.minLowRate, r.getLowRate()));
-            r.setHighRate(this.minMaxNormalization(1.0, 0.0, this.maxHighRate, this.minHighRate, r.getHighRate()));
-            r.setCloseRate(this.minMaxNormalization(1.0, 0.0, this.maxDayBeforeCloseRate, this.minDayBeforeCloseRate, r.getCloseRate()));
-            r.setOpenRate(this.minMaxNormalization(1.0, 0.0, this.maxOpenRate, this.minOpenRate, r.getOpenRate()));
+            r.setVolume(this.minMaxNormalization(maxRange, minRange, this.maxVolume, this.minVolume, r.getVolume()));
+            r.setLowRate(this.minMaxNormalization(maxRange, minRange, this.maxLowRate, this.minLowRate, r.getLowRate()));
+            r.setHighRate(this.minMaxNormalization(maxRange, minRange, this.maxHighRate, this.minHighRate, r.getHighRate()));
+            r.setCloseRate(this.minMaxNormalization(maxRange, minRange, this.maxDayBeforeCloseRate, this.minDayBeforeCloseRate, r.getCloseRate()));
+            r.setOpenRate(this.minMaxNormalization(maxRange, minRange, this.maxOpenRate, this.minOpenRate, r.getOpenRate()));
+        }
+        for(int i = 0; i < this.expectedOutputs.size(); i++){
+            this.expectedOutputs.set(i, this.minMaxNormalization(maxRange, minRange, this.maxDayBeforeCloseRate, this.minDayBeforeCloseRate, this.expectedOutputs.get(i)));
         }
     }
 
-    public void findMins() {
+    public void findMinimums() {
         this.rows.stream().forEach(row -> {
             if (row.getVolume() <= this.minVolume) {
                 this.minVolume = row.getVolume();

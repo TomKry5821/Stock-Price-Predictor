@@ -9,8 +9,8 @@ public class Neuron {
     static final double maxWeightValue = 1;
 
     // list of weights that comes into neuron
-     List<Double> weights = new ArrayList<>();
-     List<Double> cache_weights = new ArrayList<>();
+    List<Double> weights = new ArrayList<>();
+    List<Double> cache_weights = new ArrayList<>();
     double gradient;
     double bias;
     double value = 0;

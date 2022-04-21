@@ -19,10 +19,9 @@ public interface Backpropagation {
     // This function sums up all the gradient connecting a given neuron in a given layer
     default double sumGradient(int nIndex, Layer currentLayer) {
         double gradientSum = 0.0;
-      //  Layer currentLayer = layers.get(lIndex);
-        for(int i = 0; i < currentLayer.neurons.size(); i++) {
+        for (int i = 0; i < currentLayer.neurons.size(); i++) {
             Neuron currentNeuron = currentLayer.neurons.get(i);
-            gradientSum += currentNeuron.weights.get(nIndex)*currentNeuron.gradient;
+            gradientSum += currentNeuron.weights.get(nIndex) * currentNeuron.gradient;
         }
         return gradientSum;
     }
