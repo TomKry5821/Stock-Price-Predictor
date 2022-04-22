@@ -67,6 +67,9 @@ public class NeuralNetwork implements Backpropagation {
         this.isOutputLayerSet = true;
     }
 
+    /**
+     * Method prints layers with neurons and connections weights
+     */
     public void printLayers() {
         for (Layer layer : this.layers) {
             System.out.println("layer");
@@ -80,18 +83,27 @@ public class NeuralNetwork implements Backpropagation {
         }
     }
 
-    // This function is used to train being forward and backward.
+    /**
+     * Method used to train network with forward and backward methods
+     *
+     * @param learningRate learning rate used in the backpropagation method
+     * @param dataFrame    dataset from which network is trained
+     */
     public void train(double learningRate, DataFrame dataFrame) {
         for (int i = 0; i < this.epochs; i++) {
-            if (i == dataFrame.getRows().size() - 1) {
-                System.out.println("Network trained!");
-                return;
+            for (int j = 0; j < dataFrame.getRows().size(); j++) {
+                forward(dataFrame.getRows().get(j));
+                backward(learningRate, dataFrame.getExpectedOutputs().get(j));
             }
-            forward(dataFrame.getRows().get(i));
-            backward(learningRate, dataFrame.getExpectedOutputs().get(i));
         }
+        System.out.println("Network trained!");
     }
 
+    /**
+     * Method that is used to calculate prediction of our neural network
+     *
+     * @param row actual record in dataset
+     */
     public void forward(Row row) {
         this.layers.set(0, new Layer(row.getInput()));
         for (int i = 1; i < layers.size(); i++) {
@@ -117,8 +129,8 @@ public class NeuralNetwork implements Backpropagation {
             // and for each of their weights
             double output = layers.get(outIndex).neurons.get(i).value;
             double target = expectedOutput;
-             System.out.println("Target - " + target);
-             System.out.println("Calculated - " + output);
+            // System.out.println("Target - " + target);
+            //System.out.println("Calculated - " + output);
             // System.out.println("Error - " + calculateSquaredError(output, target));
             double derivative = output - target;
             double delta = derivative * (output * (1 - output));
@@ -155,6 +167,12 @@ public class NeuralNetwork implements Backpropagation {
 
     }
 
+    /**
+     * Method is used to calculate predictions of neural network from test dataset
+     *
+     * @param rows    list of test records
+     * @param outputs list of target outputs
+     */
     public void test(List<Row> rows, List<Double> outputs) {
         for (int i = 0; i < rows.size(); i++) {
             forward(rows.get(i));

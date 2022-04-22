@@ -31,86 +31,6 @@ public class DataFrame implements Normalizable {
         this.maxVolume = 0.0;
     }
 
-    public double getMinOpenRate() {
-        return minOpenRate;
-    }
-
-    public void setMinOpenRate(double minOpenRate) {
-        this.minOpenRate = minOpenRate;
-    }
-
-    public double getMaxOpenRate() {
-        return maxOpenRate;
-    }
-
-    public void setMaxOpenRate(double maxOpenRate) {
-        this.maxOpenRate = maxOpenRate;
-    }
-
-    public double getMinDayBeforeCloseRate() {
-        return minDayBeforeCloseRate;
-    }
-
-    public void setMinDayBeforeCloseRate(double minDayBeforeCloseRate) {
-        this.minDayBeforeCloseRate = minDayBeforeCloseRate;
-    }
-
-    public double getMaxDayBeforeCloseRate() {
-        return maxDayBeforeCloseRate;
-    }
-
-    public void setMaxDayBeforeCloseRate(double maxDayBeforeCloseRate) {
-        this.maxDayBeforeCloseRate = maxDayBeforeCloseRate;
-    }
-
-    public double getMinHighRate() {
-        return minHighRate;
-    }
-
-    public void setMinHighRate(double minHighRate) {
-        this.minHighRate = minHighRate;
-    }
-
-    public double getMaxHighRate() {
-        return maxHighRate;
-    }
-
-    public void setMaxHighRate(double maxHighRate) {
-        this.maxHighRate = maxHighRate;
-    }
-
-    public double getMinLowRate() {
-        return minLowRate;
-    }
-
-    public void setMinLowRate(double minLowRate) {
-        this.minLowRate = minLowRate;
-    }
-
-    public double getMaxLowRate() {
-        return maxLowRate;
-    }
-
-    public void setMaxLowRate(double maxLowRate) {
-        this.maxLowRate = maxLowRate;
-    }
-
-    public double getMinVolume() {
-        return minVolume;
-    }
-
-    public void setMinVolume(double minVolume) {
-        this.minVolume = minVolume;
-    }
-
-    public double getMaxVolume() {
-        return maxVolume;
-    }
-
-    public void setMaxVolume(double maxVolume) {
-        this.maxVolume = maxVolume;
-    }
-
     public List<Row> getRows() {
         return rows;
     }
@@ -139,9 +59,15 @@ public class DataFrame implements Normalizable {
         rows.remove(rows.size() - 1); // we need to remove last item in rows because we do not have expected output for last item
     }
 
+    /**
+     * Method used to prepare all parameters to min max normalization
+     *
+     * @param maxRange maximum range after normalization
+     * @param minRange minimum range after normalization
+     */
     public void prepareToMinMaxNormalizationAndNormalize(double maxRange, double minRange) {
         this.findMinimums();
-        this.findMaxes();
+        this.findMaximums();
         for (Row r : this.rows) {
             r.setVolume(this.minMaxNormalization(maxRange, minRange, this.maxVolume, this.minVolume, r.getVolume()));
             r.setLowRate(this.minMaxNormalization(maxRange, minRange, this.maxLowRate, this.minLowRate, r.getLowRate()));
@@ -149,11 +75,14 @@ public class DataFrame implements Normalizable {
             r.setCloseRate(this.minMaxNormalization(maxRange, minRange, this.maxDayBeforeCloseRate, this.minDayBeforeCloseRate, r.getCloseRate()));
             r.setOpenRate(this.minMaxNormalization(maxRange, minRange, this.maxOpenRate, this.minOpenRate, r.getOpenRate()));
         }
-        for(int i = 0; i < this.expectedOutputs.size(); i++){
+        for (int i = 0; i < this.expectedOutputs.size(); i++) {
             this.expectedOutputs.set(i, this.minMaxNormalization(maxRange, minRange, this.maxDayBeforeCloseRate, this.minDayBeforeCloseRate, this.expectedOutputs.get(i)));
         }
     }
 
+    /**
+     * Method finds minimum values of fields in dataset
+     */
     public void findMinimums() {
         this.rows.stream().forEach(row -> {
             if (row.getVolume() <= this.minVolume) {
@@ -175,7 +104,10 @@ public class DataFrame implements Normalizable {
         return;
     }
 
-    public void findMaxes() {
+    /**
+     * Method fins minimum values of fields in dataset
+     */
+    public void findMaximums() {
         this.rows.stream().forEach(row -> {
             if (row.getVolume() >= this.maxVolume) {
                 this.maxVolume = row.getVolume();

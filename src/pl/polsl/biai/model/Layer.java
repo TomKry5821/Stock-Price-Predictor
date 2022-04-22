@@ -7,7 +7,12 @@ import java.util.Random;
 public class Layer {
     public List<Neuron> neurons;
 
-    // Constructor for the hidden and output layer
+    /**
+     * Constructor for hidden and output layers
+     *
+     * @param inputNeurons  input neurons in layer
+     * @param neuronsNumber number of neurons in layer
+     */
     public Layer(int inputNeurons, int neuronsNumber) {
         this.neurons = new ArrayList<>(neuronsNumber);
 
@@ -26,11 +31,15 @@ public class Layer {
     }
 
 
-    // Constructor for the input layer
+    /**
+     * Constructor for input layer
+     *
+     * @param inputValues list of input values
+     */
     public Layer(List<Double> inputValues) {
-        this.neurons = new ArrayList<Neuron>(inputValues.size());
-        for (int i = 0; i < inputValues.size(); i++) {
-            this.neurons.add(new Neuron(inputValues.get(i)));
+        this.neurons = new ArrayList<>(inputValues.size());
+        for (Double inputValue : inputValues) {
+            this.neurons.add(new Neuron(inputValue));
         }
     }
 }

@@ -14,10 +14,10 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         CsvReader csvReader = new CsvReader();
         List<Row> rows = csvReader.readFromCsv("resources/train.csv");
-       // System.out.println("Before normalization");
+        // System.out.println("Before normalization");
         //rows.stream().forEach(row -> {
-         //   System.out.printf("%f, %f, %f, %f, %f\n", row.getHighRate(), row.getCloseRate(), row.getLowRate(), row.getOpenRate(), row.getVolume());
-       // });
+        //   System.out.printf("%f, %f, %f, %f, %f\n", row.getHighRate(), row.getCloseRate(), row.getLowRate(), row.getOpenRate(), row.getVolume());
+        // });
         DataFrame dataFrame = new DataFrame();
         dataFrame.setRows(rows);
         dataFrame.setExpectedOutputs();
@@ -25,7 +25,7 @@ public class Main {
         dataFrame.prepareToMinMaxNormalizationAndNormalize(1.0, 0.0);
         //dataFrame.getRows().stream().forEach(row -> {
         //    System.out.printf("%f, %f, %f, %f, %f\n", row.getHighRate(), row.getCloseRate(), row.getLowRate(), row.getOpenRate(), row.getVolume());
-      //  });
+        //  });
 
         NeuralNetwork nn = new NeuralNetwork();
         nn.setInputLayer(5);
@@ -37,12 +37,12 @@ public class Main {
         System.out.println("After training");
         nn.printLayers();
         List<Row> testRows = new ArrayList<>();
-         testRows = csvReader.readFromCsv("resources/test.csv");
-         DataFrame testDataFrame = new DataFrame();
-         testDataFrame.setRows(testRows);
+        testRows = csvReader.readFromCsv("resources/test.csv");
+        DataFrame testDataFrame = new DataFrame();
+        testDataFrame.setRows(testRows);
         testDataFrame.setExpectedOutputs();
-          testDataFrame.prepareToMinMaxNormalizationAndNormalize(1.0, 0.0);
-         nn.test(testRows, testDataFrame.getExpectedOutputs());
-         nn.printLayers();
+        testDataFrame.prepareToMinMaxNormalizationAndNormalize(1.0, 0.0);
+        nn.test(testRows, testDataFrame.getExpectedOutputs());
+        nn.printLayers();
     }
 }

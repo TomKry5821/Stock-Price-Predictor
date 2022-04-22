@@ -8,14 +8,18 @@ public class Neuron {
     static final double minWeightValue = -1;
     static final double maxWeightValue = 1;
 
-    // list of weights that comes into neuron
-    List<Double> weights = new ArrayList<>();
-    List<Double> cache_weights = new ArrayList<>();
+    List<Double> weights;
+    List<Double> cache_weights;
     double gradient;
     double bias;
     double value = 0;
 
-    // Constructor for the hidden / output neurons
+    /**
+     * Constructor for hidden/output neurons
+     *
+     * @param weights weights of the neuron
+     * @param bias    neuron bias
+     */
     public Neuron(List<Double> weights, double bias) {
         this.weights = weights;
         this.bias = bias;
@@ -23,7 +27,11 @@ public class Neuron {
         this.gradient = 0;
     }
 
-    // Constructor for the input neurons
+    /**
+     * Constructor for input neurons
+     *
+     * @param value of the neuron
+     */
     public Neuron(double value) {
         this.weights = null;
         this.bias = -1;
@@ -32,8 +40,9 @@ public class Neuron {
         this.value = value;
     }
 
-    // Function used at the end of the backprop to switch the calculated value in the
-    // cache weight in the weights
+    /**
+     * Method used to update weights after the backpropagation iteration
+     */
     public void updateWeight() {
         this.weights = this.cache_weights;
     }
