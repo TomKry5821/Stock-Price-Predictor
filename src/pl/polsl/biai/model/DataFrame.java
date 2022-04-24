@@ -6,7 +6,7 @@ import java.util.List;
 
 public class DataFrame implements Normalizable {
     private List<Row> rows = new ArrayList<>();
-    private List<Double> expectedOutputs = new ArrayList<>();
+    private final List<Double> expectedOutputs = new ArrayList<>();
     private double minOpenRate;
     private double maxOpenRate;
     private double minDayBeforeCloseRate;
@@ -125,6 +125,5 @@ public class DataFrame implements Normalizable {
                 this.maxOpenRate = row.getOpenRate();
             }
         });
-        return;
     }
 }

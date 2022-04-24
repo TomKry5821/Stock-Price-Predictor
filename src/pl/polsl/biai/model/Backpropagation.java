@@ -16,7 +16,7 @@ public interface Backpropagation {
     }
 
     /**
-     * Method used to calculate sum of squared errors
+     * Method used to calculate sum of squared errors(Not used because in our case there is just 1 output neuron)
      *
      * @param outputs       list of values
      * @param targetOutputs list of target values
@@ -39,9 +39,9 @@ public interface Backpropagation {
      */
     default double sumGradient(int nIndex, Layer currentLayer) {
         double gradientSum = 0.0;
-        for (int i = 0; i < currentLayer.neurons.size(); i++) {
-            Neuron currentNeuron = currentLayer.neurons.get(i);
-            gradientSum += currentNeuron.weights.get(nIndex) * currentNeuron.gradient;
+        for (int i = 0; i < currentLayer.getNeurons().size(); i++) {
+            Neuron currentNeuron = currentLayer.getNeurons().get(i);
+            gradientSum += currentNeuron.getWeights().get(nIndex) * currentNeuron.getGradient();
         }
         return gradientSum;
     }

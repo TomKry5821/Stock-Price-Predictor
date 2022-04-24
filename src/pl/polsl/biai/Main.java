@@ -13,19 +13,18 @@ public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
         CsvReader csvReader = new CsvReader();
-        List<Row> rows = csvReader.readFromCsv("resources/train.csv");
-        // System.out.println("Before normalization");
-        //rows.stream().forEach(row -> {
-        //   System.out.printf("%f, %f, %f, %f, %f\n", row.getHighRate(), row.getCloseRate(), row.getLowRate(), row.getOpenRate(), row.getVolume());
-        // });
+
+        List<Row> rows = new ArrayList<>();
+        try {
+            rows = csvReader.readFromCsv("resources/train.csv");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
         DataFrame dataFrame = new DataFrame();
         dataFrame.setRows(rows);
         dataFrame.setExpectedOutputs();
-        //System.out.println("After normalization");
         dataFrame.prepareToMinMaxNormalizationAndNormalize(1.0, 0.0);
-        //dataFrame.getRows().stream().forEach(row -> {
-        //    System.out.printf("%f, %f, %f, %f, %f\n", row.getHighRate(), row.getCloseRate(), row.getLowRate(), row.getOpenRate(), row.getVolume());
-        //  });
 
         NeuralNetwork nn = new NeuralNetwork();
         nn.setInputLayer(5);
@@ -34,14 +33,22 @@ public class Main {
         nn.setEpochs(5000);
         nn.printLayers();
         nn.train(0.5, dataFrame);
+
         System.out.println("After training");
         nn.printLayers();
+
         List<Row> testRows = new ArrayList<>();
-        testRows = csvReader.readFromCsv("resources/test.csv");
+        try {
+            testRows = csvReader.readFromCsv("resources/test.csv");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
         DataFrame testDataFrame = new DataFrame();
         testDataFrame.setRows(testRows);
         testDataFrame.setExpectedOutputs();
         testDataFrame.prepareToMinMaxNormalizationAndNormalize(1.0, 0.0);
+
         nn.test(testRows, testDataFrame.getExpectedOutputs());
         nn.printLayers();
     }

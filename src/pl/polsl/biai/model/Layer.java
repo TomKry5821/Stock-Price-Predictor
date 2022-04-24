@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Random;
 
 public class Layer {
-    public List<Neuron> neurons;
+    private List<Neuron> neurons;
+    // TODO: Add bias neuron
 
     /**
      * Constructor for hidden and output layers
@@ -15,21 +16,19 @@ public class Layer {
      */
     public Layer(int inputNeurons, int neuronsNumber) {
         this.neurons = new ArrayList<>(neuronsNumber);
-
         double randomDouble;
         Random r = new Random();
+
         for (int i = 0; i < neuronsNumber; i++) {
             List<Double> weights = new ArrayList<Double>(inputNeurons);
             for (int j = 0; j < inputNeurons; j++) {
-
-                randomDouble = r.nextDouble(Neuron.minWeightValue, Neuron.maxWeightValue);
+                randomDouble = r.nextDouble(-1.0, 1.0);
                 weights.add(randomDouble);
             }
-            randomDouble = r.nextDouble(Neuron.minWeightValue, Neuron.maxWeightValue);
-            neurons.add(new Neuron(weights, randomDouble));
+            randomDouble = r.nextDouble(-1.0, 1.0);
+            neurons.add(new Neuron(weights));
         }
     }
-
 
     /**
      * Constructor for input layer
@@ -41,5 +40,13 @@ public class Layer {
         for (Double inputValue : inputValues) {
             this.neurons.add(new Neuron(inputValue));
         }
+    }
+
+    public List<Neuron> getNeurons() {
+        return neurons;
+    }
+
+    public void setNeurons(List<Neuron> neurons) {
+        this.neurons = neurons;
     }
 }

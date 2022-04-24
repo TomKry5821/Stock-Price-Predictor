@@ -7,7 +7,7 @@ import java.util.List;
 
 public class NeuralNetwork implements Backpropagation {
 
-    List<Layer> layers = new ArrayList<>();
+    private List<Layer> layers = new ArrayList<>();
     private Boolean isInputLayerSet = false;
     private Boolean isOutputLayerSet = false;
     private Integer epochs;
@@ -44,7 +44,7 @@ public class NeuralNetwork implements Backpropagation {
             return;
         }
         // Taking neurons number from previous layer
-        int inputNeurons = this.layers.get(this.layers.size() - 1).neurons.size();
+        int inputNeurons = this.layers.get(this.layers.size() - 1).getNeurons().size();
         Layer hiddenLayer = new Layer(inputNeurons, neuronsNumber);
 
         this.layers.add(hiddenLayer);
@@ -60,7 +60,7 @@ public class NeuralNetwork implements Backpropagation {
             return;
         }
         // Taking neurons number from previous layer
-        int inputNeurons = this.layers.get(this.layers.size() - 1).neurons.size();
+        int inputNeurons = this.layers.get(this.layers.size() - 1).getNeurons().size();
         Layer outputLayer = new Layer(inputNeurons, neuronsNumber);
 
         this.layers.add(outputLayer);
@@ -73,11 +73,11 @@ public class NeuralNetwork implements Backpropagation {
     public void printLayers() {
         for (Layer layer : this.layers) {
             System.out.println("layer");
-            for (Neuron neuron : layer.neurons) {
-                if (neuron.weights == null) {
-                    System.out.println("Neuron " + neuron.value);
+            for (Neuron neuron : layer.getNeurons()) {
+                if (neuron.getWeights() == null) {
+                    System.out.println("Neuron " + neuron.getValue());
                 } else {
-                    System.out.println("Neuron " + neuron.value + " weight " + neuron.weights.toString());
+                    System.out.println("Neuron " + neuron.getValue() + " weight " + neuron.getCacheWeights().toString());
                 }
             }
         }
@@ -107,64 +107,82 @@ public class NeuralNetwork implements Backpropagation {
     public void forward(Row row) {
         this.layers.set(0, new Layer(row.getInput()));
         for (int i = 1; i < layers.size(); i++) {
-            for (int j = 0; j < layers.get(i).neurons.size(); j++) {
+            for (int j = 0; j < layers.get(i).getNeurons().size(); j++) {
                 double sum = 0;
-                for (int k = 0; k < layers.get(i - 1).neurons.size(); k++) {
-                    sum += layers.get(i - 1).neurons.get(k).value * layers.get(i).neurons.get(j).weights.get(k);
+                for (int k = 0; k < layers.get(i - 1).getNeurons().size(); k++) {
+                    sum += layers.get(i - 1).getNeurons().get(k).getValue() * layers.get(i).getNeurons().get(j).getWeights().get(k);
                 }
                 //sum += layers[i].neurons[j].bias; // TODO add in the bias
-                layers.get(i).neurons.get(j).value = Sigmoid.execute(sum);
+                layers.get(i).getNeurons().get(j).setValue(Sigmoid.execute(sum));
             }
         }
     }
 
     public void backward(double learningRate, double expectedOutput) {
-
         int layersNumber = layers.size();
-        int outIndex = layersNumber - 1;
+        int lastLayerIndex = layersNumber - 1;
 
-        // Update the output layers
-        // For each output
-        for (int i = 0; i < layers.get(outIndex).neurons.size(); i++) {
-            // and for each of their weights
-            double output = layers.get(outIndex).neurons.get(i).value;
-            double target = expectedOutput;
-            // System.out.println("Target - " + target);
-            //System.out.println("Calculated - " + output);
-            // System.out.println("Error - " + calculateSquaredError(output, target));
-            double derivative = output - target;
-            double delta = derivative * (output * (1 - output));
-            layers.get(outIndex).neurons.get(i).gradient = delta;
-            for (int j = 0; j < layers.get(outIndex).neurons.get(i).weights.size(); j++) {
-                double previousOutput = layers.get(outIndex - 1).neurons.get(j).value;
-                double error = delta * previousOutput;
-                layers.get(outIndex).neurons.get(i).cache_weights.set(j, layers.get(outIndex).neurons.get(i).weights.get(j) - learningRate * error);
+        updateOutputLayers(learningRate, expectedOutput, lastLayerIndex);
+        //Update all the subsequent hidden layers
+        updateSubsequentLayers(learningRate, lastLayerIndex);
+        // Here we do another pass where we update all the weights
+        updateWeights();
+
+    }
+
+    /**
+     * Method that updates weights in all layers
+     */
+    private void updateWeights() {
+        for (Layer layer : layers) {
+            for (int j = 0; j < layer.getNeurons().size(); j++) {
+                layer.getNeurons().get(j).updateWeight();
             }
         }
+    }
 
-        //Update all the subsequent hidden layers
-        for (int i = outIndex - 1; i > 0; i--) {
+    /**
+     * Method that updates all subsequent hidden layers
+     * @param learningRate learning rate used in backpropagation
+     * @param lastLayerIndex last layer index
+     */
+    private void updateSubsequentLayers(double learningRate, int lastLayerIndex) {
+        for (int i = lastLayerIndex - 1; i > 0; i--) {
             // For all neurons in that layers
-            for (int j = 0; j < layers.get(i).neurons.size(); j++) {
-                double output = layers.get(i).neurons.get(j).value;
+            for (int j = 0; j < layers.get(i).getNeurons().size(); j++) {
+                double output = layers.get(i).getNeurons().get(j).getValue();
                 double gradientSum = sumGradient(j, layers.get(i + 1));
                 double delta = (gradientSum) * (output * (1 - output));
-                layers.get(i).neurons.get(j).gradient = delta;
+                layers.get(i).getNeurons().get(j).setGradient(delta);
                 // And for all their weights
-                for (int k = 0; k < layers.get(i).neurons.get(j).weights.size(); k++) {
-                    double previousOutput = layers.get(i - 1).neurons.get(k).value;
+                for (int k = 0; k < layers.get(i).getNeurons().get(j).getWeights().size(); k++) {
+                    double previousOutput = layers.get(i - 1).getNeurons().get(k).getValue();
                     double error = delta * previousOutput;
-                    layers.get(i).neurons.get(j).cache_weights.set(k, layers.get(i).neurons.get(j).weights.get(k) - learningRate * error);
+                    layers.get(i).getNeurons().get(j).getCacheWeights().set(k, layers.get(i).getNeurons().get(j).getWeights().get(k) - learningRate * error);
                 }
             }
         }
-        // Here we do another pass where we update all the weights
-        for (int i = 0; i < layers.size(); i++) {
-            for (int j = 0; j < layers.get(i).neurons.size(); j++) {
-                layers.get(i).neurons.get(j).updateWeight();
+    }
+
+    /**
+     * Method that updates all output neurons in output layer
+     * @param learningRate learning rate used in backpropagation
+     * @param expectedOutput target output
+     * @param lastLayerIndex index of the last layer
+     */
+    private void updateOutputLayers(double learningRate, double expectedOutput, int lastLayerIndex) {
+        for (int i = 0; i < layers.get(lastLayerIndex).getNeurons().size(); i++) {
+            // and for each of their weights
+            double output = layers.get(lastLayerIndex).getNeurons().get(i).getValue();
+            double derivative = output - expectedOutput;
+            double delta = derivative * (output * (1 - output));
+            layers.get(lastLayerIndex).getNeurons().get(i).setGradient(delta);
+            for (int j = 0; j < layers.get(lastLayerIndex).getNeurons().get(i).getWeights().size(); j++) {
+                double previousOutput = layers.get(lastLayerIndex - 1).getNeurons().get(j).getValue();
+                double error = delta * previousOutput;
+                layers.get(lastLayerIndex).getNeurons().get(i).getCacheWeights().set(j, layers.get(lastLayerIndex).getNeurons().get(i).getWeights().get(j) - learningRate * error);
             }
         }
-
     }
 
     /**
@@ -176,7 +194,7 @@ public class NeuralNetwork implements Backpropagation {
     public void test(List<Row> rows, List<Double> outputs) {
         for (int i = 0; i < rows.size(); i++) {
             forward(rows.get(i));
-            System.out.println("Calculated - " + layers.get(2).neurons.get(0).value);
+            System.out.println("Calculated - " + layers.get(layers.size() - 1).getNeurons().get(0).getValue());
             System.out.println("Target - " + outputs.get(i));
         }
     }
