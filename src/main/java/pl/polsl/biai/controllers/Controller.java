@@ -7,13 +7,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import pl.polsl.biai.models.CsvReader;
-import pl.polsl.biai.models.NeuralNetwork;
 import pl.polsl.biai.models.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Controller {
     public Label trainingFilePathLabel;
@@ -36,8 +35,8 @@ public class Controller {
             trainingFile = file;
             trainingFilePathLabel.setVisible(true);
             trainingFilePathLabel.setText(file.getParentFile().getParentFile().getName()
-            + "/" + file.getParentFile().getName()
-            + "/" + file.getName());
+                    + "/" + file.getParentFile().getName()
+                    + "/" + file.getName());
         }
     }
 
@@ -56,12 +55,11 @@ public class Controller {
     }
 
     public void train(ActionEvent actionEvent) {
-
-        if(!canTrain())return;
+        if (!canTrain()) return;
 
         csvReader = new CsvReader();
+        List<Row> rows = new ArrayList<>();
 
-        ArrayList<Row> rows = new ArrayList<>();
         try {
             rows = csvReader.readFromCsv(trainingFile.getAbsolutePath());
         } catch (FileNotFoundException e) {
@@ -73,35 +71,29 @@ public class Controller {
         dataFrame.setExpectedOutputs();
         dataFrame.prepareToMinMaxNormalizationAndNormalize(1.0, 0.0);
 
-        neuralNetwork = new NeuralNetwork();
-        neuralNetwork.setInputLayer(5);
-        neuralNetwork.setHiddenLayer(5);
-        neuralNetwork.setOutputLayer(1);
+        NeuralNetworkBuilder neuralNetworkBuilder = new NeuralNetworkBuilder();
+        neuralNetwork = neuralNetworkBuilder.buildInputLayer(5).buildHiddenLayer(5).buildOutputLayer(1).build();
         neuralNetwork.setEpochs(5000);
-        //neuralNetwork.printLayers();
 
         outputTextArea.appendText("Training started...\n");
-        new Thread(()->{
-            neuralNetwork.train(0.5, dataFrame);
+        new Thread(() -> {
+            neuralNetwork.train(0.3, dataFrame);
             outputTextArea.appendText("Training complete!\n");
         }).start();
-
-        //System.out.println("After training");
-        //neuralNetwork.printLayers();
     }
 
     private boolean canTrain() {
         boolean test = false;
-        if(neuralNetwork != null && neuralNetwork.state == NeuralNetwork.State.TRAINING){
+        if (neuralNetwork != null && neuralNetwork.state == NeuralNetwork.State.TRAINING) {
             errorLabel.setText("Network is training. Check output window for more information.");
             errorLabel.setVisible(true);
-        }else if(neuralNetwork != null && neuralNetwork.state == NeuralNetwork.State.TESTING){
+        } else if (neuralNetwork != null && neuralNetwork.state == NeuralNetwork.State.TESTING) {
             errorLabel.setText("Network is training. Check output window for more information.");
             errorLabel.setVisible(true);
-        }else if(trainingFile == null){
+        } else if (trainingFile == null) {
             errorLabel.setText("Training file has not been chosen or has wrong format.");
             errorLabel.setVisible(true);
-        }else{
+        } else {
             errorLabel.setVisible(false);
             test = true;
         }
@@ -109,8 +101,7 @@ public class Controller {
     }
 
     public void test(ActionEvent actionEvent) throws InterruptedException {
-
-        if(!canTest())return;
+        if (!canTest()) return;
 
         ArrayList<Row> testRows = new ArrayList<>();
         try {
@@ -127,20 +118,19 @@ public class Controller {
         ArrayList<Row> finalTestRows = testRows;
 
         outputTextArea.appendText("Testing started...\n");
-        Thread t1 = new Thread(()->{
+        Thread t1 = new Thread(() -> {
             neuralNetwork.test(finalTestRows, testDataFrame.getExpectedOutputs());
         });
         t1.start();
         t1.join();
 
-
-        ArrayList<Double> calculated = neuralNetwork.getTestingCalculated();
-        ArrayList<Double> expected = neuralNetwork.getTestingExpected();
+        List<Double> calculated = neuralNetwork.getTestingCalculated();
+        List<Double> expected = neuralNetwork.getTestingExpected();
 
         outputTextArea.appendText("Testing complete! \nResults:\n");
-        for(int i = 0;i<calculated.size();i++){
-            outputTextArea.appendText(("Calculated: "   + calculated.get(i))+"\n");
-            outputTextArea.appendText(("Target    : "   + expected.get(i))+"\n");
+        for (int i = 0; i < calculated.size(); i++) {
+            outputTextArea.appendText(("Calculated: " + calculated.get(i)) + "\n");
+            outputTextArea.appendText(("Target    : " + expected.get(i)) + "\n");
         }
 
         XYChart.Series calculatedSeries = new XYChart.Series();
@@ -148,7 +138,7 @@ public class Controller {
         XYChart.Series expectedSeries = new XYChart.Series();
         expectedSeries.setName("Target");
 
-        for(int i = 0; i<calculated.size();i++){
+        for (int i = 0; i < calculated.size(); i++) {
             calculatedSeries.getData().add(new XYChart.Data(Integer.toString(i), calculated.get(i)));
             expectedSeries.getData().add(new XYChart.Data(Integer.toString(i), expected.get(i)));
         }
@@ -159,19 +149,19 @@ public class Controller {
 
     private boolean canTest() {
         boolean test = false;
-        if(neuralNetwork != null && neuralNetwork.state == NeuralNetwork.State.TRAINING){
+        if (neuralNetwork != null && neuralNetwork.state == NeuralNetwork.State.TRAINING) {
             errorLabel.setText("Network is training. Check output window for more information.");
             errorLabel.setVisible(true);
-        }else if(neuralNetwork != null && neuralNetwork.state == NeuralNetwork.State.TESTING){
+        } else if (neuralNetwork != null && neuralNetwork.state == NeuralNetwork.State.TESTING) {
             errorLabel.setText("Network is training. Check output window for more information.");
             errorLabel.setVisible(true);
-        }else if(neuralNetwork == null || neuralNetwork.state == NeuralNetwork.State.UNTRAINED){
+        } else if (neuralNetwork == null || neuralNetwork.state == NeuralNetwork.State.UNTRAINED) {
             errorLabel.setText("Network has not been tested yet.");
             errorLabel.setVisible(true);
-        }else if(testingFile == null){
+        } else if (testingFile == null) {
             errorLabel.setText("Testing file has not been chosen or has wrong format.");
             errorLabel.setVisible(true);
-        }else{
+        } else {
             errorLabel.setVisible(false);
             test = true;
         }

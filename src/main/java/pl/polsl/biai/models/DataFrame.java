@@ -1,10 +1,11 @@
 package pl.polsl.biai.models;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class DataFrame implements Normalizable {
-    private ArrayList<Row> rows = new ArrayList<>();
+    private List<Row> rows = new ArrayList<>();
     private final ArrayList<Double> expectedOutputs = new ArrayList<>();
     private double minOpenRate;
     private double maxOpenRate;
@@ -30,11 +31,11 @@ public class DataFrame implements Normalizable {
         this.maxVolume = 0.0;
     }
 
-    public ArrayList<Row> getRows() {
+    public List<Row> getRows() {
         return rows;
     }
 
-    public void setRows(ArrayList<Row> rows) {
+    public void setRows(List<Row> rows) {
         this.rows = rows;
         this.minOpenRate = rows.get(0).getOpenRate();
         this.maxOpenRate = rows.get(0).getOpenRate();
@@ -47,7 +48,7 @@ public class DataFrame implements Normalizable {
         this.maxVolume = rows.get(0).getVolume();
     }
 
-    public ArrayList<Double> getExpectedOutputs() {
+    public List<Double> getExpectedOutputs() {
         return expectedOutputs;
     }
 

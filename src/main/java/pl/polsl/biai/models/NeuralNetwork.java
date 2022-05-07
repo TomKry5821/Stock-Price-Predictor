@@ -3,10 +3,11 @@ package pl.polsl.biai.models;
 import javafx.scene.control.TextArea;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class NeuralNetwork implements Backpropagation {
 
-    private final ArrayList<Layer> layers = new ArrayList<>();
+    private final List<Layer> layers = new ArrayList<>();
     private Boolean isInputLayerSet = false;
     private Boolean isOutputLayerSet = false;
     private Integer epochs;
@@ -15,15 +16,15 @@ public class NeuralNetwork implements Backpropagation {
 
     public State state = State.UNTRAINED;
 
-    private ArrayList<Double> testingExpected = new ArrayList<>();
-    private final ArrayList<Double> testingCalculated = new ArrayList<>();
+    private List<Double> testingExpected = new ArrayList<>();
+    private final List<Double> testingCalculated = new ArrayList<>();
 
-    public ArrayList<Double> getTestingExpected() {
+    public List<Double> getTestingExpected() {
         if(state == State.TESTED) return testingExpected;
         else return null;
     }
 
-    public ArrayList<Double> getTestingCalculated() {
+    public List<Double> getTestingCalculated() {
         if(state == State.TESTED) return testingCalculated;
         else return null;
     }
@@ -33,14 +34,14 @@ public class NeuralNetwork implements Backpropagation {
     }
 
     public void setInputLayer(int neuronsNumber) {
-        ArrayList<Double> inputNeurons = new ArrayList<>();
+        List<Double> inputNeurons = new ArrayList<>();
         for (int i = 0; i < neuronsNumber; i++) {
             inputNeurons.add(0.0);
         }
         this.setInputLayer(inputNeurons);
     }
 
-    private void setInputLayer(ArrayList<Double> inputValues) {
+    private void setInputLayer(List<Double> inputValues) {
         if (inputValues.size() < 1) {
             System.err.println("Add at least one neuron!");
             return;
@@ -207,7 +208,7 @@ public class NeuralNetwork implements Backpropagation {
      * @param rows    list of test records
      * @param expected list of expected outputs
      */
-    public void test(ArrayList<Row> rows, ArrayList<Double> expected) {
+    public void test(List<Row> rows, List<Double> expected) {
         if(state == State.TRAINING || state == State.TESTING) return;
         state = State.TESTING;
 

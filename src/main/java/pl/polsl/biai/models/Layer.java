@@ -1,6 +1,7 @@
 package pl.polsl.biai.models;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Layer {
@@ -34,7 +35,7 @@ public class Layer {
      *
      * @param inputValues list of input values
      */
-    public Layer(ArrayList<Double> inputValues) {
+    public Layer(List<Double> inputValues) {
         this.neurons = new ArrayList<>(inputValues.size());
         for (Double inputValue : inputValues) {
             this.neurons.add(new Neuron(inputValue));
