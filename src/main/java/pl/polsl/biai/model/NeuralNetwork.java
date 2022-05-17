@@ -1,6 +1,7 @@
-package pl.polsl.biai.models;
+package pl.polsl.biai.model;
 
-import javafx.scene.control.TextArea;
+import pl.polsl.biai.learningmethod.Backpropagation;
+import pl.polsl.biai.model.activationfunction.Sigmoid;
 
 import java.util.ArrayList;
 import java.util.List;

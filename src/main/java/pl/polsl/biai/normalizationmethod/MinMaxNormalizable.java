@@ -1,6 +1,6 @@
-package pl.polsl.biai.models;
+package pl.polsl.biai.normalizationmethod;
 
-public interface Normalizable {
+public interface MinMaxNormalizable {
     /**
      * Returns normalized value
      *

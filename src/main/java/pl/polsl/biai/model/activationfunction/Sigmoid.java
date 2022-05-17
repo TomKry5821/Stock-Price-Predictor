@@ -1,4 +1,4 @@
-package pl.polsl.biai.models;
+package pl.polsl.biai.model.activationfunction;
 
 public class Sigmoid extends ActivationFunction {
 

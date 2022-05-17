@@ -1,4 +1,4 @@
-package pl.polsl.biai.models;
+package pl.polsl.biai.builder;
 
 public interface Builder {
 

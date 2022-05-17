@@ -1,4 +1,7 @@
-package pl.polsl.biai.models;
+package pl.polsl.biai.learningmethod;
+
+import pl.polsl.biai.model.Layer;
+import pl.polsl.biai.model.Neuron;
 
 import java.util.ArrayList;
 

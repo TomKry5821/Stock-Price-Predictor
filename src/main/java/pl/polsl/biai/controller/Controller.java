@@ -1,4 +1,4 @@
-package pl.polsl.biai.controllers;
+package pl.polsl.biai.controller;
 
 import javafx.event.ActionEvent;
 import javafx.scene.chart.LineChart;
@@ -7,7 +7,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import pl.polsl.biai.models.*;
+import pl.polsl.biai.builder.NeuralNetworkBuilder;
+import pl.polsl.biai.model.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -77,7 +78,7 @@ public class Controller {
 
         outputTextArea.appendText("Training started...\n");
         new Thread(() -> {
-            neuralNetwork.train(0.3, dataFrame);
+            neuralNetwork.train(0.1, dataFrame);
             outputTextArea.appendText("Training complete!\n");
         }).start();
     }

@@ -1,4 +1,6 @@
-package pl.polsl.biai.models;
+package pl.polsl.biai.builder;
+
+import pl.polsl.biai.model.NeuralNetwork;
 
 public class NeuralNetworkBuilder implements Builder {
 

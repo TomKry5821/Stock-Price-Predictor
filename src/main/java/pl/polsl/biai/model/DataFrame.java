@@ -1,10 +1,12 @@
-package pl.polsl.biai.models;
+package pl.polsl.biai.model;
+
+import pl.polsl.biai.normalizationmethod.MinMaxNormalizable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class DataFrame implements Normalizable {
+public class DataFrame implements MinMaxNormalizable {
     private List<Row> rows = new ArrayList<>();
     private final ArrayList<Double> expectedOutputs = new ArrayList<>();
     private double minOpenRate;
@@ -84,7 +86,7 @@ public class DataFrame implements Normalizable {
      * Method finds minimum values of fields in dataset
      */
     public void findMinimums() {
-        this.rows.stream().forEach(row -> {
+        this.rows.forEach(row -> {
             if (row.getVolume() <= this.minVolume) {
                 this.minVolume = row.getVolume();
             }
@@ -101,14 +103,13 @@ public class DataFrame implements Normalizable {
                 this.minOpenRate = row.getOpenRate();
             }
         });
-        return;
     }
 
     /**
      * Method fins minimum values of fields in dataset
      */
     public void findMaximums() {
-        this.rows.stream().forEach(row -> {
+        this.rows.forEach(row -> {
             if (row.getVolume() >= this.maxVolume) {
                 this.maxVolume = row.getVolume();
             }
