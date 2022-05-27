@@ -11,8 +11,9 @@ public class DataFrame implements MinMaxNormalizable {
     private final ArrayList<Double> expectedOutputs = new ArrayList<>();
     private double minOpenRate;
     private double maxOpenRate;
-    private double minDayBeforeCloseRate;
-    private double maxDayBeforeCloseRate;
+    private double minCloseRate;
+
+    private double maxCloseRate;
     private double minHighRate;
     private double maxHighRate;
     private double minLowRate;
@@ -23,14 +24,18 @@ public class DataFrame implements MinMaxNormalizable {
     public DataFrame() {
         this.minOpenRate = 0.0;
         this.maxOpenRate = 0.0;
-        this.minDayBeforeCloseRate = 0.0;
-        this.maxDayBeforeCloseRate = 0.0;
+        this.minCloseRate = 0.0;
+        this.maxCloseRate = 0.0;
         this.minHighRate = 0.0;
         this.maxHighRate = 0.0;
         this.minLowRate = 0.0;
         this.maxLowRate = 0.0;
         this.minVolume = 0.0;
         this.maxVolume = 0.0;
+    }
+
+    public double getMaxCloseRate() {
+        return maxCloseRate;
     }
 
     public List<Row> getRows() {
@@ -41,8 +46,8 @@ public class DataFrame implements MinMaxNormalizable {
         this.rows = rows;
         this.minOpenRate = rows.get(0).getOpenRate();
         this.maxOpenRate = rows.get(0).getOpenRate();
-        this.minDayBeforeCloseRate = rows.get(0).getCloseRate();
-        this.maxDayBeforeCloseRate = rows.get(0).getCloseRate();
+        this.minCloseRate = rows.get(0).getCloseRate();
+        this.maxCloseRate = rows.get(0).getCloseRate();
         this.minHighRate = rows.get(0).getHighRate();
         this.maxHighRate = rows.get(0).getHighRate();
         this.maxLowRate = rows.get(0).getLowRate();
@@ -74,11 +79,11 @@ public class DataFrame implements MinMaxNormalizable {
             r.setVolume(this.minMaxNormalization(maxRange, minRange, this.maxVolume, this.minVolume, r.getVolume()));
             r.setLowRate(this.minMaxNormalization(maxRange, minRange, this.maxLowRate, this.minLowRate, r.getLowRate()));
             r.setHighRate(this.minMaxNormalization(maxRange, minRange, this.maxHighRate, this.minHighRate, r.getHighRate()));
-            r.setCloseRate(this.minMaxNormalization(maxRange, minRange, this.maxDayBeforeCloseRate, this.minDayBeforeCloseRate, r.getCloseRate()));
+            r.setCloseRate(this.minMaxNormalization(maxRange, minRange, this.maxCloseRate, this.minCloseRate, r.getCloseRate()));
             r.setOpenRate(this.minMaxNormalization(maxRange, minRange, this.maxOpenRate, this.minOpenRate, r.getOpenRate()));
         }
         for (int i = 0; i < this.expectedOutputs.size(); i++) {
-            this.expectedOutputs.set(i, this.minMaxNormalization(maxRange, minRange, this.maxDayBeforeCloseRate, this.minDayBeforeCloseRate, this.expectedOutputs.get(i)));
+            this.expectedOutputs.set(i, this.minMaxNormalization(maxRange, minRange, this.maxCloseRate, this.minCloseRate, this.expectedOutputs.get(i)));
         }
     }
 
@@ -90,8 +95,8 @@ public class DataFrame implements MinMaxNormalizable {
             if (row.getVolume() <= this.minVolume) {
                 this.minVolume = row.getVolume();
             }
-            if (row.getCloseRate() <= this.minDayBeforeCloseRate) {
-                this.minDayBeforeCloseRate = row.getCloseRate();
+            if (row.getCloseRate() <= this.minCloseRate) {
+                this.minCloseRate = row.getCloseRate();
             }
             if (row.getHighRate() <= this.minHighRate) {
                 this.minHighRate = row.getHighRate();
@@ -113,8 +118,8 @@ public class DataFrame implements MinMaxNormalizable {
             if (row.getVolume() >= this.maxVolume) {
                 this.maxVolume = row.getVolume();
             }
-            if (row.getCloseRate() >= this.maxDayBeforeCloseRate) {
-                this.maxDayBeforeCloseRate = row.getCloseRate();
+            if (row.getCloseRate() >= this.maxCloseRate) {
+                this.maxCloseRate = row.getCloseRate();
             }
             if (row.getHighRate() >= this.maxHighRate) {
                 this.maxHighRate = row.getHighRate();
@@ -126,5 +131,9 @@ public class DataFrame implements MinMaxNormalizable {
                 this.maxOpenRate = row.getOpenRate();
             }
         });
+    }
+
+    public double getMinCloseRate() {
+        return this.minCloseRate;
     }
 }

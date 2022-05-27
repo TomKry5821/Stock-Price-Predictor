@@ -6,7 +6,6 @@ import java.util.Random;
 
 public class Layer {
     private ArrayList<Neuron> neurons;
-    // TODO: Add bias neuron
 
     /**
      * Constructor for hidden and output layers
@@ -25,7 +24,6 @@ public class Layer {
                 randomDouble = r.nextDouble(-1.0, 1.0);
                 weights.add(randomDouble);
             }
-            randomDouble = r.nextDouble(-1.0, 1.0);
             neurons.add(new Neuron(weights));
         }
     }

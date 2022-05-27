@@ -15,4 +15,8 @@ public interface MinMaxNormalizable {
         return (actual - min) / (max - min) * (maxRange - minRange) + minRange;
     }
 
+    default double minMaxDenormalization(double max, double min, double actual) {
+        return actual * (max - min) + min;
+    }
+
 }
