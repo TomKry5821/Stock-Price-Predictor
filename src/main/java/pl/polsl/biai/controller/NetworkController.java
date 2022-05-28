@@ -5,6 +5,7 @@ import pl.polsl.biai.model.CsvReader;
 import pl.polsl.biai.model.DataFrame;
 import pl.polsl.biai.model.NeuralNetwork;
 import pl.polsl.biai.model.Row;
+import pl.polsl.biai.normalizationmethod.MinMaxNormalizable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,8 +21,8 @@ public class NetworkController {
     private NeuralNetwork neuralNetwork;
     private CsvReader csvReader;
 
-    public NetworkController(ViewController viewController){
-        this.viewController=viewController;
+    public NetworkController(ViewController viewController) {
+        this.viewController = viewController;
     }
 
     public void setTrainingFile(File trainingFile) {
@@ -56,7 +57,7 @@ public class NetworkController {
         return true;
     }
 
-    public void testNetwork(){
+    public void testNetwork() {
         try {
             canTestNetwork();
             viewController.dataErrorLabel.setVisible(false);
@@ -93,15 +94,34 @@ public class NetworkController {
         List<Double> expected = neuralNetwork.getTestingExpected();
 
         viewController.print("Testing complete! \nResults:\n");
+
+        ////////////////////////////////////////////////// DENORMALIZATION
+        denormalizeOutput(testDataFrame, calculated, expected);
+
         for (int i = 0; i < calculated.size(); i++) {
             viewController.print(("Calculated: " + calculated.get(i)) + "\n");
             viewController.print(("Target    : " + expected.get(i)) + "\n");
         }
-
         viewController.initializeChart(calculated, expected);
     }
 
-    public void trainNetwork(){
+    private void denormalizeOutput(DataFrame testDataFrame, List<Double> calculated, List<Double> expected) {
+        MinMaxNormalizable denormalizator = new MinMaxNormalizable() {};
+        testDataFrame.findMaximums();
+        double max = testDataFrame.getMaxCloseRate();
+        double min = testDataFrame.getMinCloseRate();
+        double denormalizedOutput;
+        for(int i = 0; i < calculated.size(); i++){
+            denormalizedOutput = denormalizator.minMaxDenormalization(max, min, calculated.get(i));
+            calculated.set(i, denormalizedOutput);
+        }
+        for(int i = 0; i < calculated.size(); i++){
+            denormalizedOutput = denormalizator.minMaxDenormalization(max, min, expected.get(i));
+            expected.set(i, denormalizedOutput);
+        }
+    }
+
+    public void trainNetwork() {
         try {
             canTrainNetwork();
             viewController.dataErrorLabel.setVisible(false);

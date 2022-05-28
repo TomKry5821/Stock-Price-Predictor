@@ -16,7 +16,6 @@ public class NeuralNetwork implements Backpropagation {
     public enum State{UNTRAINED,TRAINING,TRAINED,TESTING,TESTED}
 
     public State state = State.UNTRAINED;
-
     private List<Double> testingExpected = new ArrayList<>();
     private final List<Double> testingCalculated = new ArrayList<>();
 

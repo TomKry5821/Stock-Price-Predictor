@@ -7,7 +7,7 @@ public class Neuron {
     private ArrayList<Double> weights;
     private final ArrayList<Double> cacheWeights;
     private double gradient;
-    private double value = 0;
+    private double value;
 
     /**
      * Constructor for hidden/output neurons
@@ -18,6 +18,7 @@ public class Neuron {
         this.weights = weights;
         this.cacheWeights = this.weights;
         this.gradient = 0;
+        this.value = 0;
     }
 
     /**
@@ -35,7 +36,6 @@ public class Neuron {
     public ArrayList<Double> getWeights() {
         return weights;
     }
-
 
     public ArrayList<Double> getCacheWeights() {
         return cacheWeights;
