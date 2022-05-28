@@ -5,6 +5,9 @@ import com.opencsv.bean.CsvBindByName;
 import java.util.ArrayList;
 
 public class Row {
+
+    @CsvBindByName(column = "date", required = true)
+    private String date;
     @CsvBindByName(column = "open", required = true)
     private double openRate;
     @CsvBindByName(column = "close", required = true)
@@ -14,14 +17,24 @@ public class Row {
     @CsvBindByName(column = "low", required = true)
     private double lowRate;
     @CsvBindByName(column = "volume", required = true)
-    private double volume;
+    private int volume;
+    private double normalizedVolume;
 
     public Row() {
+        this.date = "";
         this.openRate = 0.0;
         this.closeRate = 0.0;
         this.highRate = 0.0;
         this.lowRate = 0.0;
-        this.volume = 0.0;
+        this.volume = 0;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public double getOpenRate() {
@@ -56,21 +69,43 @@ public class Row {
         this.lowRate = lowRate;
     }
 
-    public double getVolume() {
+    public int getVolume() {
         return volume;
     }
 
-    public void setVolume(double volume) {
+    public void setVolume(int volume) {
         this.volume = volume;
     }
+
+    public double getNormalizedVolume() {
+        return normalizedVolume;
+    }
+
+    public void setNormalizedVolume(double normalizedVolume) {
+        this.normalizedVolume = normalizedVolume;
+    }
+
 
     public ArrayList<Double> getInput() {
         ArrayList<Double> input = new ArrayList<>();
         input.add(this.openRate);
         input.add(this.closeRate);
         input.add(this.highRate);
-        input.add(this.volume);
+        input.add(this.normalizedVolume);
         input.add(this.lowRate);
         return input;
+    }
+
+    @Override
+    public String toString() {
+        return "Row{" +
+                "date='" + date + '\'' +
+                ", openRate=" + openRate +
+                ", closeRate=" + closeRate +
+                ", highRate=" + highRate +
+                ", lowRate=" + lowRate +
+                ", volume=" + volume +
+                ", normalizedVolume=" + normalizedVolume +
+                '}';
     }
 }

@@ -18,8 +18,8 @@ public class DataFrame implements MinMaxNormalizable {
     private double maxHighRate;
     private double minLowRate;
     private double maxLowRate;
-    private double minVolume;
-    private double maxVolume;
+    private int minVolume;
+    private int maxVolume;
 
     public DataFrame() {
         this.minOpenRate = 0.0;
@@ -30,8 +30,8 @@ public class DataFrame implements MinMaxNormalizable {
         this.maxHighRate = 0.0;
         this.minLowRate = 0.0;
         this.maxLowRate = 0.0;
-        this.minVolume = 0.0;
-        this.maxVolume = 0.0;
+        this.minVolume = 0;
+        this.maxVolume = 0;
     }
 
     public double getMaxCloseRate() {
@@ -76,7 +76,7 @@ public class DataFrame implements MinMaxNormalizable {
         this.findMinimums();
         this.findMaximums();
         for (Row r : this.rows) {
-            r.setVolume(this.minMaxNormalization(maxRange, minRange, this.maxVolume, this.minVolume, r.getVolume()));
+            r.setNormalizedVolume(this.minMaxNormalization(maxRange, minRange, this.maxVolume, this.minVolume, r.getVolume()));
             r.setLowRate(this.minMaxNormalization(maxRange, minRange, this.maxLowRate, this.minLowRate, r.getLowRate()));
             r.setHighRate(this.minMaxNormalization(maxRange, minRange, this.maxHighRate, this.minHighRate, r.getHighRate()));
             r.setCloseRate(this.minMaxNormalization(maxRange, minRange, this.maxCloseRate, this.minCloseRate, r.getCloseRate()));

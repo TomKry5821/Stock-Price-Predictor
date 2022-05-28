@@ -1,14 +1,19 @@
 package pl.polsl.biai.controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import pl.polsl.biai.model.ResultRow;
+import pl.polsl.biai.model.Row;
 
 import java.io.File;
-import java.util.List;
+import java.util.ArrayList;
 
 public class ViewController {
 
@@ -28,6 +33,12 @@ public class ViewController {
     public ChoiceBox queryPredictionsChoiceBox;
     public TableView queryTable;
     public Label queryErrorLabel;
+    public TableColumn resultsTableDateColumn;
+    public TableColumn resultsTableCalculatedColumn;
+    public TableColumn resultsTableTargetColumn;
+    public TableColumn resultsTableErrorColumn;
+    public Label tableTitle;
+    public Label chartTitle;
     //endregion
 
     NetworkController networkController = new NetworkController(this);
@@ -36,15 +47,24 @@ public class ViewController {
         outputTextArea.appendText(s);
     }
 
-    public void initializeChart(List<Double> calculated, List<Double> expected){
+    public void initializeTable(ArrayList<ResultRow> results){
+        ObservableList<ResultRow> resultRowObservableList = FXCollections.observableArrayList(results);
+        resultsTableDateColumn.setCellValueFactory(new PropertyValueFactory<ResultRow,String>("date"));
+        resultsTableCalculatedColumn.setCellValueFactory(new PropertyValueFactory<ResultRow,String>("calculated"));
+        resultsTableTargetColumn.setCellValueFactory(new PropertyValueFactory<ResultRow,String>("target"));
+        resultsTableErrorColumn.setCellValueFactory(new PropertyValueFactory<ResultRow,String>("error"));
+        resultsTable.setItems(resultRowObservableList);
+    }
+
+    public void initializeChart(ArrayList<ResultRow> results){
         XYChart.Series calculatedSeries = new XYChart.Series();
         calculatedSeries.setName("Calculated");
         XYChart.Series expectedSeries = new XYChart.Series();
         expectedSeries.setName("Target");
 
-        for (int i = 0; i < calculated.size(); i++) {
-            calculatedSeries.getData().add(new XYChart.Data(Integer.toString(i), calculated.get(i)));
-            expectedSeries.getData().add(new XYChart.Data(Integer.toString(i), expected.get(i)));
+        for (int i = 0; i < results.size(); i++) {
+            calculatedSeries.getData().add(new XYChart.Data(results.get(i).getDate(), results.get(i).getCalculated()));
+            expectedSeries.getData().add(new XYChart.Data(results.get(i).getDate(), results.get(i).getTarget()));
         }
         resultsChart.getData().clear();
         resultsChart.getData().addAll(calculatedSeries, expectedSeries);
@@ -88,6 +108,13 @@ public class ViewController {
     }
 
     public void showButtonClicked(ActionEvent actionEvent) {
-
+        Row row = new Row();
+        row.setDate(queryDatePicker.getValue().toString());
+        row.setCloseRate(Double.parseDouble(queryCloseField.getText()));
+        row.setOpenRate(Double.parseDouble(queryOpenField.getText()));
+        row.setHighRate(Double.parseDouble(queryHighField.getText()));
+        row.setLowRate(Double.parseDouble(queryLowField.getText()));
+        row.setVolume(Integer.parseInt(queryVolumeField.getText()));
+        networkController.predict(row);
     }
 }

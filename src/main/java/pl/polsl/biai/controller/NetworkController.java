@@ -1,10 +1,7 @@
 package pl.polsl.biai.controller;
 
 import pl.polsl.biai.builder.NeuralNetworkBuilder;
-import pl.polsl.biai.model.CsvReader;
-import pl.polsl.biai.model.DataFrame;
-import pl.polsl.biai.model.NeuralNetwork;
-import pl.polsl.biai.model.Row;
+import pl.polsl.biai.model.*;
 import pl.polsl.biai.normalizationmethod.MinMaxNormalizable;
 
 import java.io.File;
@@ -50,7 +47,7 @@ public class NetworkController {
         } else if (neuralNetwork != null && neuralNetwork.state == NeuralNetwork.State.TESTING) {
             throw new Exception("Network is testing. Check output window for more information.");
         } else if (neuralNetwork == null || neuralNetwork.state == NeuralNetwork.State.UNTRAINED) {
-            throw new Exception("Network has not been tested yet.");
+            throw new Exception("Network has not been trained yet.");
         } else if (testingFile == null) {
             throw new Exception("Testing file has not been chosen or has wrong format.");
         }
@@ -89,20 +86,27 @@ public class NetworkController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        viewController.print("Testing complete! \nResults:\nDate | Calculated | Target\n");
 
         List<Double> calculated = neuralNetwork.getTestingCalculated();
         List<Double> expected = neuralNetwork.getTestingExpected();
 
-        viewController.print("Testing complete! \nResults:\n");
-
         ////////////////////////////////////////////////// DENORMALIZATION
         denormalizeOutput(testDataFrame, calculated, expected);
 
-        for (int i = 0; i < calculated.size(); i++) {
-            viewController.print(("Calculated: " + calculated.get(i)) + "\n");
-            viewController.print(("Target    : " + expected.get(i)) + "\n");
+        ArrayList<ResultRow> results = new ArrayList<>();
+        for(int i = 0; i < testRows.size(); i++){
+            results.add(new ResultRow(testRows.get(i).getDate(),calculated.get(i),expected.get(i)));
+
         }
-        viewController.initializeChart(calculated, expected);
+        for (var result : results) {
+            viewController.print(result.toString());
+        }
+
+        viewController.chartTitle.setText("Test results for file "+ testingFile.getName());
+        viewController.initializeChart(results);
+        viewController.tableTitle.setText("Test results for file "+ testingFile.getName());
+        viewController.initializeTable(results);
     }
 
     private void denormalizeOutput(DataFrame testDataFrame, List<Double> calculated, List<Double> expected) {
@@ -154,5 +158,14 @@ public class NetworkController {
             neuralNetwork.train(0.1, dataFrame);
             viewController.print("Training complete!\n");
         }).start();
+    }
+
+    public ArrayList<ResultRow> predict(Row data){
+        ArrayList<ResultRow> results = new ArrayList<>();
+
+        System.out.println(data.toString());
+
+
+        return  results;
     }
 }
