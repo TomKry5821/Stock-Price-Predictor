@@ -14,23 +14,8 @@ public interface Backpropagation {
      * @param targetOutput target value
      * @return result squared error
      */
-    default double calculateSquaredError(double output, double targetOutput) {
+     static double calculateError(double output, double targetOutput) {
         return 0.5 * Math.pow(2, (targetOutput - output));
-    }
-
-    /**
-     * Method used to calculate sum of squared errors(Not used because in our case there is just 1 output neuron)
-     *
-     * @param outputs       list of values
-     * @param targetOutputs list of target values
-     * @return result sum of squared errors
-     */
-    default double sumSquaredError(ArrayList<Double> outputs, ArrayList<Double> targetOutputs) {
-        double errorsSum = 0;
-        for (int i = 0; i < outputs.size(); i++) {
-            errorsSum += calculateSquaredError(outputs.get(i), targetOutputs.get(i));
-        }
-        return errorsSum;
     }
 
     /**

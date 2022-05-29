@@ -2,6 +2,8 @@ package pl.polsl.biai.model;
 
 import pl.polsl.biai.learningmethod.Backpropagation;
 import pl.polsl.biai.model.activationfunction.Sigmoid;
+import pl.polsl.biai.model.data.DataFrame;
+import pl.polsl.biai.model.data.Row;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,28 +11,35 @@ import java.util.List;
 public class NeuralNetwork implements Backpropagation {
 
     private final List<Layer> layers = new ArrayList<>();
+    private final List<Double> testingCalculated = new ArrayList<>();
+
+    public State state = State.UNTRAINED;
+
     private Boolean isInputLayerSet = false;
     private Boolean isOutputLayerSet = false;
     private Integer epochs;
-
-    public enum State{UNTRAINED,TRAINING,TRAINED,TESTING,TESTED}
-
-    public State state = State.UNTRAINED;
     private List<Double> testingExpected = new ArrayList<>();
-    private final List<Double> testingCalculated = new ArrayList<>();
 
     public List<Double> getTestingExpected() {
-        if(state == State.TESTED) return testingExpected;
+        if (state == State.TESTED) return testingExpected;
         else return null;
     }
 
     public List<Double> getTestingCalculated() {
-        if(state == State.TESTED) return testingCalculated;
+        if (state == State.TESTED) return testingCalculated;
         else return null;
+    }
+
+    public List<Layer> getLayers() {
+        return layers;
     }
 
     public void setEpochs(Integer epochs) {
         this.epochs = epochs;
+    }
+
+    public Integer getEpochs() {
+        return epochs;
     }
 
     public void setInputLayer(int neuronsNumber) {
@@ -85,28 +94,13 @@ public class NeuralNetwork implements Backpropagation {
     }
 
     /**
-     * Method prints layers with neurons and connections weights
-     */
-    public void printLayers() {
-        for (Layer layer : this.layers) {
-            System.out.println("layer");
-            for (Neuron neuron : layer.getNeurons()) {
-                if (neuron.getWeights() == null) {
-                    System.out.println("Neuron " + neuron.getValue());
-                } else {
-                    System.out.println("Neuron " + neuron.getValue() + " weight " + neuron.getCacheWeights().toString());
-                }
-            }
-        }
-    }
-
-    /**
      * Method used to train network with forward and backward methods
-     *  @param learningRate learning rate used in the backpropagation method
+     *
+     * @param learningRate learning rate used in the backpropagation method
      * @param dataFrame    dataset from which network is trained
      */
     public void train(double learningRate, DataFrame dataFrame) {
-        if(state == State.TRAINING || state == State.TESTING) return;
+        if (state == State.TRAINING || state == State.TESTING) return;
         state = State.TRAINING;
         for (int i = 0; i < this.epochs; i++) {
             for (int j = 0; j < dataFrame.getRows().size(); j++) {
@@ -161,7 +155,8 @@ public class NeuralNetwork implements Backpropagation {
 
     /**
      * Method that updates all subsequent hidden layers
-     * @param learningRate learning rate used in backpropagation
+     *
+     * @param learningRate   learning rate used in backpropagation
      * @param lastLayerIndex last layer index
      */
     private void updateSubsequentLayers(double learningRate, int lastLayerIndex) {
@@ -184,7 +179,8 @@ public class NeuralNetwork implements Backpropagation {
 
     /**
      * Method that updates all output neurons in output layer
-     * @param learningRate learning rate used in backpropagation
+     *
+     * @param learningRate   learning rate used in backpropagation
      * @param expectedOutput target output
      * @param lastLayerIndex index of the last layer
      */
@@ -205,11 +201,12 @@ public class NeuralNetwork implements Backpropagation {
 
     /**
      * Method is used to calculate predictions of neural network from test dataset
-     * @param rows    list of test records
+     *
+     * @param rows     list of test records
      * @param expected list of expected outputs
      */
     public void test(List<Row> rows, List<Double> expected) {
-        if(state == State.TRAINING || state == State.TESTING) return;
+        if (state == State.TRAINING || state == State.TESTING) return;
         state = State.TESTING;
 
         testingExpected.clear();
@@ -219,9 +216,11 @@ public class NeuralNetwork implements Backpropagation {
         for (int i = 0; i < rows.size(); i++) {
             forward(rows.get(i));
             testingCalculated.add(layers.get(layers.size() - 1).getNeurons().get(0).getValue());
-            System.out.println("Calculated: "   + testingCalculated.get(i));
-            System.out.println("Target:     "       + testingExpected.get(i));
+            System.out.println("Calculated: " + testingCalculated.get(i));
+            System.out.println("Target:     " + testingExpected.get(i));
         }
         state = State.TESTED;
     }
+
+    public enum State {UNTRAINED, TRAINING, TRAINED, TESTING, TESTED}
 }

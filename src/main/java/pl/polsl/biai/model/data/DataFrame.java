@@ -1,4 +1,4 @@
-package pl.polsl.biai.model;
+package pl.polsl.biai.model.data;
 
 import pl.polsl.biai.normalizationmethod.MinMaxNormalizable;
 
@@ -12,7 +12,6 @@ public class DataFrame implements MinMaxNormalizable {
     private double minOpenRate;
     private double maxOpenRate;
     private double minCloseRate;
-
     private double maxCloseRate;
     private double minHighRate;
     private double maxHighRate;
@@ -64,6 +63,10 @@ public class DataFrame implements MinMaxNormalizable {
             this.expectedOutputs.add(rows.get(i).getCloseRate());
         }
         rows.remove(rows.size() - 1); // we need to remove last item in rows because we do not have expected output for last item
+    }
+
+    public double getMinCloseRate() {
+        return this.minCloseRate;
     }
 
     /**
@@ -133,7 +136,4 @@ public class DataFrame implements MinMaxNormalizable {
         });
     }
 
-    public double getMinCloseRate() {
-        return this.minCloseRate;
-    }
 }

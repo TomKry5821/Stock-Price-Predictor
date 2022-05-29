@@ -2,6 +2,10 @@ package pl.polsl.biai.controller;
 
 import pl.polsl.biai.builder.NeuralNetworkBuilder;
 import pl.polsl.biai.model.*;
+import pl.polsl.biai.model.data.CsvReader;
+import pl.polsl.biai.model.data.DataFrame;
+import pl.polsl.biai.model.data.ResultRow;
+import pl.polsl.biai.model.data.Row;
 import pl.polsl.biai.normalizationmethod.MinMaxNormalizable;
 
 import java.io.File;
@@ -30,7 +34,7 @@ public class NetworkController {
         this.testingFile = testingFile;
     }
 
-    public boolean canTrainNetwork() throws Exception {
+    private boolean canTrainNetwork() throws Exception {
         if (neuralNetwork != null && neuralNetwork.state == NeuralNetwork.State.TRAINING) {
             throw new Exception("Network is training. Check output window for more information.");
         } else if (neuralNetwork != null && neuralNetwork.state == NeuralNetwork.State.TESTING) {
@@ -41,7 +45,7 @@ public class NetworkController {
         return true;
     }
 
-    public boolean canTestNetwork() throws Exception {
+    private boolean canTestNetwork() throws Exception {
         if (neuralNetwork != null && neuralNetwork.state == NeuralNetwork.State.TRAINING) {
             throw new Exception("Network is training. Check output window for more information.");
         } else if (neuralNetwork != null && neuralNetwork.state == NeuralNetwork.State.TESTING) {

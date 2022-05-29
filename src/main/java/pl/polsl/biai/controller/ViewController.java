@@ -9,8 +9,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import pl.polsl.biai.model.ResultRow;
-import pl.polsl.biai.model.Row;
+import pl.polsl.biai.model.data.ResultRow;
+import pl.polsl.biai.model.data.Row;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -19,4 +19,6 @@ module pl.polsl.biai {
     opens pl.polsl.biai.learningmethod to java.sql, javafx.fxml;
     exports pl.polsl.biai.normalizationmethod;
     opens pl.polsl.biai.normalizationmethod to java.sql, javafx.fxml;
+    exports pl.polsl.biai.model.data;
+    opens pl.polsl.biai.model.data to java.sql, javafx.fxml;
 }

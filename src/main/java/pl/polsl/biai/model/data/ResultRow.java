@@ -1,4 +1,6 @@
-package pl.polsl.biai.model;
+package pl.polsl.biai.model.data;
+
+import pl.polsl.biai.learningmethod.Backpropagation;
 
 import java.text.DecimalFormat;
 
@@ -16,7 +18,7 @@ public class ResultRow {
         }
         this.calculated = calculated;
         this.target = target;
-        this.error = target-calculated;
+        this.error = Backpropagation.calculateError(calculated, target);
     }
 
     public String getDate() {

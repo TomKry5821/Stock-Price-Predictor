@@ -43,8 +43,4 @@ public class Layer {
     public ArrayList<Neuron> getNeurons() {
         return neurons;
     }
-
-    public void setNeurons(ArrayList<Neuron> neurons) {
-        this.neurons = neurons;
-    }
 }

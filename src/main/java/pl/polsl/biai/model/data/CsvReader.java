@@ -1,4 +1,4 @@
-package pl.polsl.biai.model;
+package pl.polsl.biai.model.data;
 
 import com.opencsv.bean.CsvToBeanBuilder;
 
