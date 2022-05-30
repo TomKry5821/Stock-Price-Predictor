@@ -13,6 +13,8 @@ import pl.polsl.biai.model.data.ResultRow;
 import pl.polsl.biai.model.data.Row;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class ViewController {
@@ -103,18 +105,28 @@ public class ViewController {
         networkController.trainNetwork();
     }
 
-    public void testButtonClicked(ActionEvent actionEvent) throws InterruptedException {
+    public void testButtonClicked(ActionEvent actionEvent){
         networkController.testNetwork();
     }
 
-    public void showButtonClicked(ActionEvent actionEvent) {
-        Row row = new Row();
-        row.setDate(queryDatePicker.getValue().toString());
-        row.setCloseRate(Double.parseDouble(queryCloseField.getText()));
-        row.setOpenRate(Double.parseDouble(queryOpenField.getText()));
-        row.setHighRate(Double.parseDouble(queryHighField.getText()));
-        row.setLowRate(Double.parseDouble(queryLowField.getText()));
-        row.setVolume(Integer.parseInt(queryVolumeField.getText()));
-        networkController.predict(row);
+    public void saveButtonClicked(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Table");
+        File file = fileChooser.showSaveDialog(new Stage());
+        if (file != null) {
+            StringBuilder sb = new StringBuilder("");
+
+            resultsTable.getItems().forEach(row ->{
+                sb.append(row);
+                sb.append("\n");
+            });
+
+            try {
+                PrintWriter pw = new PrintWriter(file.getAbsolutePath());
+                pw.println(sb);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

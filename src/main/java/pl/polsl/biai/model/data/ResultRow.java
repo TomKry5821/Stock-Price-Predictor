@@ -56,6 +56,6 @@ public class ResultRow {
     @Override
     public String toString() {
         DecimalFormat df = new DecimalFormat("0.00000000");
-        return date + " | " + df.format(calculated) + " | " + df.format(target) +"\n";
+        return date + ", " + df.format(calculated) + ", " + df.format(target);
     }
 }

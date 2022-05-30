@@ -90,7 +90,7 @@ public class NetworkController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        viewController.print("Testing complete! \nResults:\nDate | Calculated | Target\n");
+        viewController.print("Testing complete! \nResults:\nDate, Calculated, Target\n");
 
         List<Double> calculated = neuralNetwork.getTestingCalculated();
         List<Double> expected = neuralNetwork.getTestingExpected();
@@ -104,7 +104,7 @@ public class NetworkController {
 
         }
         for (var result : results) {
-            viewController.print(result.toString());
+            viewController.print(result.toString()+"\n");
         }
 
         viewController.chartTitle.setText("Test results for file "+ testingFile.getName());
@@ -162,14 +162,5 @@ public class NetworkController {
             neuralNetwork.train(0.1, dataFrame);
             viewController.print("Training complete!\n");
         }).start();
-    }
-
-    public ArrayList<ResultRow> predict(Row data){
-        ArrayList<ResultRow> results = new ArrayList<>();
-
-        System.out.println(data.toString());
-
-
-        return  results;
     }
 }
