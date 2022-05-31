@@ -154,7 +154,7 @@ public class NetworkController {
         dataFrame.prepareToMinMaxNormalizationAndNormalize(1.0, 0.0);
 
         NeuralNetworkBuilder neuralNetworkBuilder = new NeuralNetworkBuilder();
-        neuralNetwork = neuralNetworkBuilder.buildInputLayer(5).buildHiddenLayer(5).buildOutputLayer(1).build();
+        neuralNetwork = neuralNetworkBuilder.buildInputLayer(5).buildHiddenLayer(9).buildHiddenLayer(9).buildOutputLayer(1).build();
         neuralNetwork.setEpochs(5000);
 
         viewController.print("Training started...\n");
@@ -162,5 +162,9 @@ public class NetworkController {
             neuralNetwork.train(0.1, dataFrame);
             viewController.print("Training complete!\n");
         }).start();
+    }
+
+    public NeuralNetwork.State getNeuralNetworkState() {
+        return neuralNetwork != null ? neuralNetwork.state : NeuralNetwork.State.UNTRAINED;
     }
 }

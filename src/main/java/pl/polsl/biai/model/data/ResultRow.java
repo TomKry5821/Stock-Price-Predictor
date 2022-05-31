@@ -18,7 +18,7 @@ public class ResultRow {
         }
         this.calculated = calculated;
         this.target = target;
-        this.error = Backpropagation.calculateError(calculated, target);
+        this.error = Backpropagation.calculateSquaredError(calculated, target);
     }
 
     public String getDate() {
@@ -47,10 +47,6 @@ public class ResultRow {
 
     public double getError() {
         return error;
-    }
-
-    public void setError() {
-        this.error = target-calculated;
     }
 
     @Override

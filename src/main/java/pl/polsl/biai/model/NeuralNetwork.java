@@ -216,8 +216,6 @@ public class NeuralNetwork implements Backpropagation {
         for (int i = 0; i < rows.size(); i++) {
             forward(rows.get(i));
             testingCalculated.add(layers.get(layers.size() - 1).getNeurons().get(0).getValue());
-            System.out.println("Calculated: " + testingCalculated.get(i));
-            System.out.println("Target:     " + testingExpected.get(i));
         }
         state = State.TESTED;
     }

@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import pl.polsl.biai.model.NeuralNetwork;
 import pl.polsl.biai.model.data.ResultRow;
 import pl.polsl.biai.model.data.Row;
 
@@ -110,23 +111,27 @@ public class ViewController {
     }
 
     public void saveButtonClicked(ActionEvent actionEvent) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Table");
-        File file = fileChooser.showSaveDialog(new Stage());
-        if (file != null) {
-            StringBuilder sb = new StringBuilder("");
+        if(networkController.getNeuralNetworkState() == NeuralNetwork.State.TESTED){
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Table");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv"));
+            File file = fileChooser.showSaveDialog(new Stage());
+            if (file != null) {
+                StringBuilder sb = new StringBuilder("");
 
-            resultsTable.getItems().forEach(row ->{
-                sb.append(row);
-                sb.append("\n");
-            });
+                resultsTable.getItems().forEach(row ->{
+                    sb.append(row);
+                    sb.append("\n");
+                });
 
-            try {
-                PrintWriter pw = new PrintWriter(file.getAbsolutePath());
-                pw.println(sb);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                try {
+                    PrintWriter pw = new PrintWriter(file.getAbsolutePath());
+                    pw.println(sb);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
+
     }
 }
