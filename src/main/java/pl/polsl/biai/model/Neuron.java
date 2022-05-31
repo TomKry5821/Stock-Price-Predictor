@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Neuron {
 
-    private ArrayList<Double> weights;
     private final ArrayList<Double> cacheWeights;
+    private ArrayList<Double> weights;
     private double gradient;
     private double value;
 

@@ -95,7 +95,6 @@ public class NetworkController {
         List<Double> calculated = neuralNetwork.getTestingCalculated();
         List<Double> expected = neuralNetwork.getTestingExpected();
 
-        ////////////////////////////////////////////////// DENORMALIZATION
         denormalizeOutput(testDataFrame, calculated, expected);
 
         ArrayList<ResultRow> results = new ArrayList<>();

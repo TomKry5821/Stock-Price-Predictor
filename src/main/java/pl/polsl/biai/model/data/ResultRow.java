@@ -11,9 +11,9 @@ public class ResultRow {
     private double error;
 
     public ResultRow(String date, double calculated, double target) {
-        if(date.length()>11){
-            this.date = date.substring(0,11);
-        }else{
+        if (date.length() > 11) {
+            this.date = date.substring(0, 11);
+        } else {
             this.date = date;
         }
         this.calculated = calculated;

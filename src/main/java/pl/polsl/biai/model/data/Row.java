@@ -33,10 +33,6 @@ public class Row {
         return date;
     }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public double getOpenRate() {
         return openRate;
     }
@@ -73,18 +69,9 @@ public class Row {
         return volume;
     }
 
-    public void setVolume(int volume) {
-        this.volume = volume;
-    }
-
-    public double getNormalizedVolume() {
-        return normalizedVolume;
-    }
-
     public void setNormalizedVolume(double normalizedVolume) {
         this.normalizedVolume = normalizedVolume;
     }
-
 
     public ArrayList<Double> getInput() {
         ArrayList<Double> input = new ArrayList<>();
@@ -98,14 +85,6 @@ public class Row {
 
     @Override
     public String toString() {
-        return "Row{" +
-                "date='" + date + '\'' +
-                ", openRate=" + openRate +
-                ", closeRate=" + closeRate +
-                ", highRate=" + highRate +
-                ", lowRate=" + lowRate +
-                ", volume=" + volume +
-                ", normalizedVolume=" + normalizedVolume +
-                '}';
+        return "Row{" + "date='" + date + '\'' + ", openRate=" + openRate + ", closeRate=" + closeRate + ", highRate=" + highRate + ", lowRate=" + lowRate + ", volume=" + volume + ", normalizedVolume=" + normalizedVolume + '}';
     }
 }

@@ -7,8 +7,9 @@ import java.util.List;
 
 
 public class DataFrame implements MinMaxNormalizable {
-    private List<Row> rows = new ArrayList<>();
     private final ArrayList<Double> expectedOutputs = new ArrayList<>();
+
+    private List<Row> rows = new ArrayList<>();
     private double minOpenRate;
     private double maxOpenRate;
     private double minCloseRate;

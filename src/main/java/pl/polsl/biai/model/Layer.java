@@ -19,7 +19,7 @@ public class Layer {
         Random r = new Random();
 
         for (int i = 0; i < neuronsNumber; i++) {
-            ArrayList<Double> weights = new ArrayList<Double>(inputNeurons);
+            ArrayList<Double> weights = new ArrayList<>(inputNeurons);
             for (int j = 0; j < inputNeurons; j++) {
                 randomDouble = r.nextDouble(-1.0, 1.0);
                 weights.add(randomDouble);

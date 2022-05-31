@@ -30,14 +30,6 @@ public class NeuralNetwork implements Backpropagation {
         else return null;
     }
 
-    public List<Layer> getLayers() {
-        return layers;
-    }
-
-    public Integer getEpochs() {
-        return epochs;
-    }
-
     public void setEpochs(Integer epochs) {
         this.epochs = epochs;
     }
@@ -124,7 +116,6 @@ public class NeuralNetwork implements Backpropagation {
                 for (int k = 0; k < layers.get(i - 1).getNeurons().size(); k++) {
                     sum += layers.get(i - 1).getNeurons().get(k).getValue() * layers.get(i).getNeurons().get(j).getWeights().get(k);
                 }
-                //sum += layers[i].neurons[j].bias; // TODO add in the bias
                 layers.get(i).getNeurons().get(j).setValue(Sigmoid.execute(sum));
             }
         }
@@ -141,9 +132,7 @@ public class NeuralNetwork implements Backpropagation {
         int lastLayerIndex = layersNumber - 1;
 
         updateOutputLayers(learningRate, expectedOutput, lastLayerIndex);
-        //Update all the subsequent hidden layers
         updateSubsequentLayers(learningRate, lastLayerIndex);
-        // Here we do another pass where we update all the weights
         updateWeights();
 
     }
@@ -167,13 +156,11 @@ public class NeuralNetwork implements Backpropagation {
      */
     private void updateSubsequentLayers(double learningRate, int lastLayerIndex) {
         for (int i = lastLayerIndex - 1; i > 0; i--) {
-            // For all neurons in that layers
             for (int j = 0; j < layers.get(i).getNeurons().size(); j++) {
                 double output = layers.get(i).getNeurons().get(j).getValue();
                 double gradientSum = sumGradient(j, layers.get(i + 1));
                 double delta = (gradientSum) * (output * (1 - output));
                 layers.get(i).getNeurons().get(j).setGradient(delta);
-                // And for all their weights
                 for (int k = 0; k < layers.get(i).getNeurons().get(j).getWeights().size(); k++) {
                     double previousOutput = layers.get(i - 1).getNeurons().get(k).getValue();
                     double error = delta * previousOutput;
@@ -192,7 +179,6 @@ public class NeuralNetwork implements Backpropagation {
      */
     private void updateOutputLayers(double learningRate, double expectedOutput, int lastLayerIndex) {
         for (int i = 0; i < layers.get(lastLayerIndex).getNeurons().size(); i++) {
-            // and for each of their weights
             double output = layers.get(lastLayerIndex).getNeurons().get(i).getValue();
             double derivative = output - expectedOutput;
             double delta = derivative * (output * (1 - output));
@@ -219,8 +205,8 @@ public class NeuralNetwork implements Backpropagation {
         testingExpected = expected;
         testingCalculated.clear();
 
-        for (int i = 0; i < rows.size(); i++) {
-            forward(rows.get(i));
+        for (Row row : rows) {
+            forward(row);
             testingCalculated.add(layers.get(layers.size() - 1).getNeurons().get(0).getValue());
         }
         state = State.TESTED;
