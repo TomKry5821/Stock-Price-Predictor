@@ -15,12 +15,12 @@ User Interface after the training and testing process - Table Tab
 ![image](https://user-images.githubusercontent.com/93645494/170872737-73415fd7-1ea5-45a2-a02c-fc42359a0a78.png)
 
 ### Implementation of machine learning in the program
-The neural network we created is a perceptron that has three layers:
+The neural network we created is a perceptron that has three layers:  
  -an input layer with five neurons,  
  -a hidden layer with three neurons,  
  -an output layer with one neuron.  
  
-The input layer neurons represent values associated with stock market prices on a given day:
+The input layer neurons represent values associated with stock market prices on a given day:  
  -opening ratio  
  -closing ratio  
  -lowest stake  
