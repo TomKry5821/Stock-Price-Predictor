@@ -16,16 +16,16 @@ User Interface after the training and testing process - Table Tab
 
 ### Implementation of machine learning in the program
 The neural network we created is a perceptron that has three layers:
- -an input layer with five neurons,
- -a hidden layer with three neurons,
- -an output layer with one neuron.
+ -an input layer with five neurons,  
+ -a hidden layer with three neurons,  
+ -an output layer with one neuron.  
  
 The input layer neurons represent values associated with stock market prices on a given day:
- -opening ratio
- -closing ratio
- -lowest stake
- -highest stake
- -volume
+ -opening ratio  
+ -closing ratio  
+ -lowest stake  
+ -highest stake  
+ -volume  
 
 #### Neural network learning method
 In the program, to teach the network we implemented the method of backpropagation of error.
