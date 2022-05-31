@@ -34,12 +34,12 @@ public class NeuralNetwork implements Backpropagation {
         return layers;
     }
 
-    public void setEpochs(Integer epochs) {
-        this.epochs = epochs;
-    }
-
     public Integer getEpochs() {
         return epochs;
+    }
+
+    public void setEpochs(Integer epochs) {
+        this.epochs = epochs;
     }
 
     public void setInputLayer(int neuronsNumber) {
@@ -130,6 +130,12 @@ public class NeuralNetwork implements Backpropagation {
         }
     }
 
+    /**
+     * Method used to learn network by backpropagation method
+     *
+     * @param learningRate   learning rate used in the backpropagation method
+     * @param expectedOutput target output
+     */
     public void backward(double learningRate, double expectedOutput) {
         int layersNumber = layers.size();
         int lastLayerIndex = layersNumber - 1;

@@ -1,7 +1,7 @@
 package pl.polsl.biai.controller;
 
 import pl.polsl.biai.builder.NeuralNetworkBuilder;
-import pl.polsl.biai.model.*;
+import pl.polsl.biai.model.NeuralNetwork;
 import pl.polsl.biai.model.data.CsvReader;
 import pl.polsl.biai.model.data.DataFrame;
 import pl.polsl.biai.model.data.ResultRow;
@@ -95,35 +95,35 @@ public class NetworkController {
         List<Double> calculated = neuralNetwork.getTestingCalculated();
         List<Double> expected = neuralNetwork.getTestingExpected();
 
-        ////////////////////////////////////////////////// DENORMALIZATION
         denormalizeOutput(testDataFrame, calculated, expected);
 
         ArrayList<ResultRow> results = new ArrayList<>();
-        for(int i = 0; i < testRows.size(); i++){
-            results.add(new ResultRow(testRows.get(i).getDate(),calculated.get(i),expected.get(i)));
+        for (int i = 0; i < testRows.size(); i++) {
+            results.add(new ResultRow(testRows.get(i).getDate(), calculated.get(i), expected.get(i)));
 
         }
         for (var result : results) {
             viewController.print(result.toString());
         }
 
-        viewController.chartTitle.setText("Test results for file "+ testingFile.getName());
+        viewController.chartTitle.setText("Test results for file " + testingFile.getName());
         viewController.initializeChart(results);
-        viewController.tableTitle.setText("Test results for file "+ testingFile.getName());
+        viewController.tableTitle.setText("Test results for file " + testingFile.getName());
         viewController.initializeTable(results);
     }
 
     private void denormalizeOutput(DataFrame testDataFrame, List<Double> calculated, List<Double> expected) {
-        MinMaxNormalizable denormalizator = new MinMaxNormalizable() {};
+        MinMaxNormalizable denormalizator = new MinMaxNormalizable() {
+        };
         testDataFrame.findMaximums();
         double max = testDataFrame.getMaxCloseRate();
         double min = testDataFrame.getMinCloseRate();
         double denormalizedOutput;
-        for(int i = 0; i < calculated.size(); i++){
+        for (int i = 0; i < calculated.size(); i++) {
             denormalizedOutput = denormalizator.minMaxDenormalization(max, min, calculated.get(i));
             calculated.set(i, denormalizedOutput);
         }
-        for(int i = 0; i < calculated.size(); i++){
+        for (int i = 0; i < calculated.size(); i++) {
             denormalizedOutput = denormalizator.minMaxDenormalization(max, min, expected.get(i));
             expected.set(i, denormalizedOutput);
         }
@@ -140,36 +140,35 @@ public class NetworkController {
         }
 
         csvReader = new CsvReader();
-        List<Row> rows = new ArrayList<>();
+        List<Row> rows;
 
         try {
             rows = csvReader.readFromCsv(trainingFile.getAbsolutePath());
+
+            DataFrame dataFrame = new DataFrame();
+            dataFrame.setRows(rows);
+            dataFrame.setExpectedOutputs();
+            dataFrame.prepareToMinMaxNormalizationAndNormalize(1.0, 0.0);
+
+            NeuralNetworkBuilder neuralNetworkBuilder = new NeuralNetworkBuilder();
+            neuralNetwork = neuralNetworkBuilder.buildInputLayer(5).buildHiddenLayer(9).buildHiddenLayer(9).buildHiddenLayer(9).buildOutputLayer(1).build();
+            neuralNetwork.setEpochs(5000);
+
+            viewController.print("Training started...\n");
+            new Thread(() -> {
+                neuralNetwork.train(0.9, dataFrame);
+                viewController.print("Training complete!\n");
+            }).start();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
-        DataFrame dataFrame = new DataFrame();
-        dataFrame.setRows(rows);
-        dataFrame.setExpectedOutputs();
-        dataFrame.prepareToMinMaxNormalizationAndNormalize(1.0, 0.0);
-
-        NeuralNetworkBuilder neuralNetworkBuilder = new NeuralNetworkBuilder();
-        neuralNetwork = neuralNetworkBuilder.buildInputLayer(5).buildHiddenLayer(5).buildOutputLayer(1).build();
-        neuralNetwork.setEpochs(5000);
-
-        viewController.print("Training started...\n");
-        new Thread(() -> {
-            neuralNetwork.train(0.1, dataFrame);
-            viewController.print("Training complete!\n");
-        }).start();
     }
 
-    public ArrayList<ResultRow> predict(Row data){
+    public ArrayList<ResultRow> predict(Row data) {
         ArrayList<ResultRow> results = new ArrayList<>();
 
         System.out.println(data.toString());
 
-
-        return  results;
+        return results;
     }
 }

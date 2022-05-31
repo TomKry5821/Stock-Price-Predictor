@@ -15,6 +15,14 @@ public interface MinMaxNormalizable {
         return (actual - min) / (max - min) * (maxRange - minRange) + minRange;
     }
 
+    /**
+     * Return denormalized value
+     *
+     * @param max    maximum value in set
+     * @param min    minimum value in set
+     * @param actual actual normalized value
+     * @return actual denormalized value
+     */
     default double minMaxDenormalization(double max, double min, double actual) {
         return actual * (max - min) + min;
     }
