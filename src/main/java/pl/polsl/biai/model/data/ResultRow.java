@@ -18,7 +18,7 @@ public class ResultRow {
         }
         this.calculated = calculated;
         this.target = target;
-        this.error = Backpropagation.calculateError(calculated, target);
+        this.error = Backpropagation.calculateSquaredError(calculated, target);
     }
 
     public String getDate() {
@@ -49,13 +49,9 @@ public class ResultRow {
         return error;
     }
 
-    public void setError() {
-        this.error = target-calculated;
-    }
-
     @Override
     public String toString() {
         DecimalFormat df = new DecimalFormat("0.00000000");
-        return date + " | " + df.format(calculated) + " | " + df.format(target) +"\n";
+        return date + ", " + df.format(calculated) + ", " + df.format(target);
     }
 }

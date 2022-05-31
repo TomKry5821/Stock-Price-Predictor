@@ -3,8 +3,6 @@ package pl.polsl.biai.learningmethod;
 import pl.polsl.biai.model.Layer;
 import pl.polsl.biai.model.Neuron;
 
-import java.util.ArrayList;
-
 public interface Backpropagation {
 
     /**
@@ -14,7 +12,7 @@ public interface Backpropagation {
      * @param targetOutput target value
      * @return result squared error
      */
-     static double calculateError(double output, double targetOutput) {
+     static double calculateSquaredError(double output, double targetOutput) {
         return 0.5 * Math.pow(2, (targetOutput - output));
     }
 
