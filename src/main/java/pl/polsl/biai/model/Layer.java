@@ -35,9 +35,10 @@ public class Layer {
      */
     public Layer(List<Double> inputValues) {
         this.neurons = new ArrayList<>(inputValues.size());
-        for (Double inputValue : inputValues) {
-            this.neurons.add(new Neuron(inputValue));
-        }
+
+        inputValues.forEach(iv ->{
+            this.neurons.add(new Neuron(iv));
+        });
     }
 
     public ArrayList<Neuron> getNeurons() {

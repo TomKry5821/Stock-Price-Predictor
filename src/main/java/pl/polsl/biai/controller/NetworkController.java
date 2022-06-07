@@ -1,7 +1,7 @@
 package pl.polsl.biai.controller;
 
 import pl.polsl.biai.builder.NeuralNetworkBuilder;
-import pl.polsl.biai.model.*;
+import pl.polsl.biai.model.NeuralNetwork;
 import pl.polsl.biai.model.data.CsvReader;
 import pl.polsl.biai.model.data.DataFrame;
 import pl.polsl.biai.model.data.ResultRow;
@@ -98,31 +98,32 @@ public class NetworkController {
         denormalizeOutput(testDataFrame, calculated, expected);
 
         ArrayList<ResultRow> results = new ArrayList<>();
-        for(int i = 0; i < testRows.size(); i++){
-            results.add(new ResultRow(testRows.get(i).getDate(),calculated.get(i),expected.get(i)));
+        for (int i = 0; i < testRows.size(); i++) {
+            results.add(new ResultRow(testRows.get(i).getDate(), calculated.get(i), expected.get(i)));
 
         }
-        for (var result : results) {
-            viewController.print(result.toString()+"\n");
-        }
+        results.forEach(r -> {
+            viewController.print(r.toString() + "\n");
+        });
 
-        viewController.chartTitle.setText("Test results for file "+ testingFile.getName());
+        viewController.chartTitle.setText("Test results for file " + testingFile.getName());
         viewController.initializeChart(results);
-        viewController.tableTitle.setText("Test results for file "+ testingFile.getName());
+        viewController.tableTitle.setText("Test results for file " + testingFile.getName());
         viewController.initializeTable(results);
     }
 
     private void denormalizeOutput(DataFrame testDataFrame, List<Double> calculated, List<Double> expected) {
-        MinMaxNormalizable denormalizator = new MinMaxNormalizable() {};
+        MinMaxNormalizable denormalizator = new MinMaxNormalizable() {
+        };
         testDataFrame.findMaximums();
         double max = testDataFrame.getMaxCloseRate();
         double min = testDataFrame.getMinCloseRate();
         double denormalizedOutput;
-        for(int i = 0; i < calculated.size(); i++){
+        for (int i = 0; i < calculated.size(); i++) {
             denormalizedOutput = denormalizator.minMaxDenormalization(max, min, calculated.get(i));
             calculated.set(i, denormalizedOutput);
         }
-        for(int i = 0; i < calculated.size(); i++){
+        for (int i = 0; i < calculated.size(); i++) {
             denormalizedOutput = denormalizator.minMaxDenormalization(max, min, expected.get(i));
             expected.set(i, denormalizedOutput);
         }

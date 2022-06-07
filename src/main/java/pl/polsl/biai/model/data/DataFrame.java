@@ -79,13 +79,14 @@ public class DataFrame implements MinMaxNormalizable {
     public void prepareToMinMaxNormalizationAndNormalize(double maxRange, double minRange) {
         this.findMinimums();
         this.findMaximums();
-        for (Row r : this.rows) {
+        this.rows.forEach(r -> {
             r.setNormalizedVolume(this.minMaxNormalization(maxRange, minRange, this.maxVolume, this.minVolume, r.getVolume()));
             r.setLowRate(this.minMaxNormalization(maxRange, minRange, this.maxLowRate, this.minLowRate, r.getLowRate()));
             r.setHighRate(this.minMaxNormalization(maxRange, minRange, this.maxHighRate, this.minHighRate, r.getHighRate()));
             r.setCloseRate(this.minMaxNormalization(maxRange, minRange, this.maxCloseRate, this.minCloseRate, r.getCloseRate()));
             r.setOpenRate(this.minMaxNormalization(maxRange, minRange, this.maxOpenRate, this.minOpenRate, r.getOpenRate()));
-        }
+        });
+
         for (int i = 0; i < this.expectedOutputs.size(); i++) {
             this.expectedOutputs.set(i, this.minMaxNormalization(maxRange, minRange, this.maxCloseRate, this.minCloseRate, this.expectedOutputs.get(i)));
         }
